@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Card from '../Card';
 import { nanoid } from 'nanoid';
+import BigNumber from 'bignumber.js';
+// or
+
 const data = [
   'Aereo',
   'AlmocoCliente',
@@ -49,15 +52,19 @@ export default class Despesa extends Component {
     input =
       input.length > 2 ? input.slice(1 - input.length).join('') : input.pop();
     this.setState((previousState, _props) => {
-      previousState.states[target.name] = parseFloat(target.value);
+      const newValue = new BigNumber(target.value);
+      previousState.states[target.name] = newValue.toFixed(2);
     });
     this.multiply(input);
   }
   multiply(input) {
     this.setState((previousState, _props) => {
-      previousState.states[`total${input}`] =
+      const total = new BigNumber(
         previousState.states[`valor${input}`] *
-          previousState.states[`quantidade${input}`] || 0;
+          previousState.states[`quantidade${input}`] || 0
+      );
+
+      previousState.states[`total${input}`] = total.toFixed(2);
       document.getElementById(`total${input}`).value =
         previousState.states[`total${input}`];
     });
@@ -78,10 +85,10 @@ export default class Despesa extends Component {
             <div className="field-body">
               <input
                 type="number"
-                className="input column is-7 mr-2"
+                className="input column is-6 mr-2"
                 name={`valor${input}`}
                 id={index}
-                value={this.state.input}
+                value={this.state.inputName.input}
                 onChange={this.handleChange}
               />
               <input
@@ -93,7 +100,7 @@ export default class Despesa extends Component {
                 }`}
                 name={`quantidade${input}`}
                 id={index}
-                value={this.state.input || 1}
+                value={this.state.inputName.input}
                 onChange={this.handleChange}
               />
               <input
