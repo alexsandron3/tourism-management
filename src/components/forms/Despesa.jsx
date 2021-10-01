@@ -3,8 +3,6 @@ import Card from '../Card';
 import { nanoid } from 'nanoid';
 import getDespesas from '../../services/getDespesas';
 
-const inputs = ['Aereo', 'AlomocoCliente', 'AlmocoMotorista'];
-
 export default class Despesa extends Component {
   constructor() {
     super();
@@ -17,7 +15,6 @@ export default class Despesa extends Component {
     this.getApiData();
   }
   async getApiData() {
-    // .reduce((res, key) => (res[key] = obj[key]), {});
     const despesas = await getDespesas();
     const getAndOrderKeys = (obj) =>
       Object.keys(obj)
@@ -25,27 +22,33 @@ export default class Despesa extends Component {
         .filter((obj) => !obj.includes('id'))
         .map((obj) => obj.split('valor').pop());
     const keys = getAndOrderKeys(despesas);
+    const inputsState = keys.map((key) => ({
+      [`valor${key}`]: 0,
+      [`quantidade${key}`]: 1,
+      [`total${key}`]: 0,
+    }));
+    console.log(...inputsState);
     this.setState({
       inputName: getAndOrderKeys(despesas),
-      states: Object.assign({}, ...keys.map((key) => ({ [key]: 0 }))),
+      states: Object.assign({}, ...inputsState),
     });
-    console.log(Object.keys(this.state.states).length);
   }
   handleChange({ target }) {
     let input = target.name.split(/(?=[A-Z])/);
     input =
       input.length > 2 ? input.slice(1 - input.length).join('') : input.pop();
     this.setState((previousState, _props) => {
-      previousState[target.name] = parseFloat(target.value);
+      previousState.states[target.name] = parseFloat(target.value);
     });
     this.sum(input);
   }
   sum(input) {
     this.setState((previousState, _props) => {
-      previousState[`total${input}`] =
-        previousState[`valor${input}`] * previousState[`quantidade${input}`];
+      previousState.states[`total${input}`] =
+        previousState.states[`valor${input}`] *
+          previousState.states[`quantidade${input}`] || 0;
       document.getElementById(`total${input}`).value =
-        previousState[`total${input}`];
+        previousState.states[`total${input}`];
     });
   }
 
@@ -74,7 +77,7 @@ export default class Despesa extends Component {
                 className="input mr-2"
                 name={`quantidade${input}`}
                 id={index}
-                value={this.state.input}
+                value={this.state.input || 1}
                 onChange={this.handleChange}
               />
               <input
