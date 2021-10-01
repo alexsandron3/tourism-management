@@ -1,0 +1,11 @@
+    // const despesas = await getDespesas();
+    // const getAndOrderKeys = (obj) =>
+    //   Object.keys(obj)
+    //     .map((obj) => obj.split('valor').pop())
+    //     .sort((a, b) =>
+    //       a.localeCompare(b, 'pt-br', {
+    //         sensitivity: 'case',
+    //       })
+    //     )
+    //     .filter((obj) => !obj.includes('id'));
+    // const keys = getAndOrderKeys(despesas);

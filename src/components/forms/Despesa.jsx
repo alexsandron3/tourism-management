@@ -1,35 +1,46 @@
 import React, { Component } from 'react';
 import Card from '../Card';
 import { nanoid } from 'nanoid';
-import getDespesas from '../../services/getDespesas';
-
+const data = [
+  'Aereo',
+  'AlmocoCliente',
+  'AlmocoMotorista',
+  'AutorizacaoTransporte',
+  'Escuna',
+  'Estacionamento',
+  'Guia',
+  'Hospedagem',
+  'Impulsionamento',
+  'Ingresso',
+  'KitLanche',
+  'Marketing',
+  'Micro',
+  'Onibus',
+  'Pulseira',
+  'SeguroViagem',
+  'Servicos',
+  'Taxi',
+  'Van',
+  'outros',
+  'totalDespesas',
+];
 export default class Despesa extends Component {
   constructor() {
     super();
-    // this.state = inputs.reduce((a, v) => ({ ...a, [v]: 0 }), {});
-    this.state = { inputName: [], states: {} };
+    this.state = { inputName: data, states: {} };
     this.handleChange = this.handleChange.bind(this);
-    this.sum = this.sum.bind(this);
+    this.multiply = this.multiply.bind(this);
   }
   componentDidMount() {
-    this.getApiData();
+    this.setDefaultState();
   }
-  async getApiData() {
-    const despesas = await getDespesas();
-    const getAndOrderKeys = (obj) =>
-      Object.keys(obj)
-        .sort((a, b) => (a < b ? 1 : -1))
-        .filter((obj) => !obj.includes('id'))
-        .map((obj) => obj.split('valor').pop());
-    const keys = getAndOrderKeys(despesas);
-    const inputsState = keys.map((key) => ({
+  setDefaultState() {
+    const inputsState = data.map((key) => ({
       [`valor${key}`]: 0,
       [`quantidade${key}`]: 1,
       [`total${key}`]: 0,
     }));
-    console.log(...inputsState);
     this.setState({
-      inputName: getAndOrderKeys(despesas),
       states: Object.assign({}, ...inputsState),
     });
   }
@@ -40,9 +51,9 @@ export default class Despesa extends Component {
     this.setState((previousState, _props) => {
       previousState.states[target.name] = parseFloat(target.value);
     });
-    this.sum(input);
+    this.multiply(input);
   }
-  sum(input) {
+  multiply(input) {
     this.setState((previousState, _props) => {
       previousState.states[`total${input}`] =
         previousState.states[`valor${input}`] *
@@ -60,7 +71,8 @@ export default class Despesa extends Component {
           <div className="field is-horizontal columns" key={nanoid()}>
             <div className="field-label has-text-left column is-3">
               <label className="label " htmlFor="1">
-                {input}
+                {/* {colocando espaço entre as palavras} */}
+                {input.split(/(?=[A-Z])/).join(' ')}
               </label>
             </div>
             <div className="field-body">
@@ -74,7 +86,11 @@ export default class Despesa extends Component {
               />
               <input
                 type="number"
-                className="input mr-2"
+                className={`input mr-2 ${
+                  input === 'outros' || input === 'totalDespesas'
+                    ? 'is-hidden'
+                    : ''
+                }`}
                 name={`quantidade${input}`}
                 id={index}
                 value={this.state.input || 1}
@@ -82,7 +98,11 @@ export default class Despesa extends Component {
               />
               <input
                 type="number"
-                className="input mr-2"
+                className={`input mr-2 ${
+                  input === 'outros' || input === 'totalDespesas'
+                    ? 'is-hidden'
+                    : ''
+                }`}
                 name={`total${input}`}
                 id={`total${input}`}
                 value={this.state.input}
