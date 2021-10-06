@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import BigNumber from 'bignumber.js';
 // or
 
-const data = [
+const defaultInputs = [
   'Aereo',
   'AlmocoCliente',
   'AlmocoMotorista',
@@ -30,18 +30,20 @@ const data = [
 export default class Despesa extends Component {
   constructor() {
     super();
-    this.state = { inputName: data, states: {} };
+    this.state = { inputName: defaultInputs, states: {} };
     this.handleChange = this.handleChange.bind(this);
     this.multiply = this.multiply.bind(this);
   }
+  
   componentDidMount() {
     this.setDefaultState();
   }
+
   setDefaultState() {
-    const inputsState = data.map((key) => ({
-      [`valor${key}`]: 0,
-      [`quantidade${key}`]: 1,
-      [`total${key}`]: 0,
+    const inputsState = defaultInputs.map((input) => ({
+      [`valor${input}`]: 0,
+      [`quantidade${input}`]: 1,
+      [`total${input}`]: 0,
     }));
     this.setState({
       states: Object.assign({}, ...inputsState),
@@ -69,6 +71,8 @@ export default class Despesa extends Component {
         previousState.states[`total${input}`];
     });
   }
+
+  total() {}
 
   render() {
     return (
