@@ -20,13 +20,11 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import FlightTakeoffOutlinedIcon from '@mui/icons-material/FlightTakeoffOutlined';
 import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
-import PersonIcon from '@mui/icons-material/Person';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import MoneyOffIcon from '@mui/icons-material/MoneyOff';
-import CakeIcon from '@mui/icons-material/Cake';
-import InfoIcon from '@mui/icons-material/Info';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import Relatorios from './partials/Relatorios';
+import Cadastrar from './partials/Cadastrar';
+import Pesquisar from './partials/Pesquisar';
 
 const styles = () => ({
   list: {
@@ -117,26 +115,7 @@ class Appbar extends Component {
               timeout="auto"
               unmountOnExit
             >
-              <List component="div" disablePadding>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <PersonIcon />
-                    <ListItemText primary="Cliente" sx={{ marginLeft: 1 }} />
-                  </ListItemIcon>
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <FlightTakeoffOutlinedIcon />
-                    <ListItemText primary="Passeio" sx={{ marginLeft: 1 }} />
-                  </ListItemIcon>
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <MoneyOffIcon />
-                    <ListItemText primary="Despesas" sx={{ marginLeft: 1 }} />
-                  </ListItemIcon>
-                </ListItemButton>
-              </List>
+              <Cadastrar />
             </Collapse>
 
             {/* Search */}
@@ -159,20 +138,7 @@ class Appbar extends Component {
               timeout="auto"
               unmountOnExit
             >
-              <List component="div" disablePadding>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <PersonIcon />
-                    <ListItemText primary="Cliente" sx={{ marginLeft: 1 }} />
-                  </ListItemIcon>
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <FlightTakeoffOutlinedIcon />
-                    <ListItemText primary="Passeio" sx={{ marginLeft: 1 }} />
-                  </ListItemIcon>
-                </ListItemButton>
-              </List>
+              <Pesquisar />
             </Collapse>
 
             {/* Trips */}
@@ -203,59 +169,7 @@ class Appbar extends Component {
               timeout="auto"
               unmountOnExit
             >
-              <List component="div" disablePadding>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <CakeIcon />
-                    <ListItemText
-                      primary="Aniversariantes do mês"
-                      sx={{ marginLeft: 1 }}
-                    />
-                  </ListItemIcon>
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <InfoIcon />
-                    <ListItemText primary="Logs" sx={{ marginLeft: 1 }} />
-                  </ListItemIcon>
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <MoneyOffIcon />
-                    <ListItemText
-                      primary="Pagamentos Pendentes"
-                      sx={{ marginLeft: 1 }}
-                    />
-                  </ListItemIcon>
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    <AttachMoneyIcon />
-                    <ListItemText
-                      primary="Pagamentos Realizados"
-                      sx={{ marginLeft: 1 }}
-                    />
-                  </ListItemIcon>
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    {/* <AttachMoneyIcon /> */}
-                    <ListItemText
-                      primary="Relatório Periódico de Vendas"
-                      sx={{ marginLeft: 1 }}
-                    />
-                  </ListItemIcon>
-                </ListItemButton>
-                <ListItemButton>
-                  <ListItemIcon sx={{ marginLeft: 2 }}>
-                    {/* <AttachMoneyIcon /> */}
-                    <ListItemText
-                      primary="Relatório de Vendas"
-                      sx={{ marginLeft: 1 }}
-                    />
-                  </ListItemIcon>
-                </ListItemButton>
-              </List>
+              <Relatorios />
             </Collapse>
           </List>
         </SwipeableDrawer>
