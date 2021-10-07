@@ -35,7 +35,7 @@ class Appbar extends Component {
   constructor() {
     super();
     this.state = {
-      appBarOpened: true,
+      appBarOpened: false,
       searchListOpened: false,
       registerListOpened: false,
       reportsListOpened: false,
@@ -51,7 +51,7 @@ class Appbar extends Component {
     const { classes } = this.props;
     return (
       <div>
-        <AppBar>
+        <AppBar position="sticky">
           <Toolbar>
             <IconButton
               size="large"

@@ -1,11 +1,8 @@
-// import { Header } from './components/Header';
-// import Despesa from './components/forms/Despesa';
-import Appbar from './components/Appbar';
+import Index from './components/pages/Index';
 function App() {
   return (
     <>
-      <Appbar />
-      {/* <Despesa /> */}
+      <Index />
     </>
   );
 }
