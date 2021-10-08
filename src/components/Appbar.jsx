@@ -12,7 +12,7 @@ import {
   ListItemIcon,
   Collapse,
 } from '@mui/material';
-import { withStyles } from '@material-ui/styles';
+import { withStyles } from '@mui/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';

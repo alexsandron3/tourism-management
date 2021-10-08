@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import Appbar from '../Appbar';
 import Content from '../partials/Content';
-import {
-  DataGrid,
-  ptBR,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from '@mui/x-data-grid';
+import { DataGrid, ptBR } from '@mui/x-data-grid';
 import 'date-fns';
-import MomentUtils from '@date-io/moment';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { DatePicker } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 //
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -88,38 +81,16 @@ export default class Index extends Component {
               justifyContent="center"
               alignItems="center"
             >
-              <MuiPickersUtilsProvider utils={MomentUtils}>
-                <Grid container justifyContent="space-around" mb={3}>
-                  <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="DD/MM/YYY"
-                    margin="normal"
-                    id="start-date"
-                    label="Data Inicial"
-                    value={this.state.startDate}
-                    onChange={(date) =>
-                      this.handleDateChange(date, 'startDate')
-                    }
-                    KeyboardButtonProps={{
-                      'aria-label': 'Data Inicial',
-                    }}
-                  />
-                  <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="DD/MM/YYY"
-                    margin="normal"
-                    id="end-date"
-                    label="Data Final"
-                    value={this.state.endDate}
-                    onChange={(date) => this.handleDateChange(date, 'endDate')}
-                    KeyboardButtonProps={{
-                      'aria-label': 'Data Final',
-                    }}
-                  />
-                </Grid>
-              </MuiPickersUtilsProvider>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label="Basic example"
+                  value={this.startDate}
+                  onChange={(newValue) => {
+                    this.handleDateChange(newValue, 'startDate');
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
                   localeText={ptBR.props.MuiDataGrid.localeText}
