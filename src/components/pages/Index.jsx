@@ -84,7 +84,7 @@ export default class Index extends Component {
               alignItems="center"
             >
               <MuiPickersUtilsProvider utils={MomentUtils}>
-                <Grid container justifyContent="space-around">
+                <Grid container justifyContent="space-around" mb={3}>
                   <KeyboardDatePicker
                     disableToolbar
                     variant="inline"
