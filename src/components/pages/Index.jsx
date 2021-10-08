@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { Grid } from '@mui/material';
 import Appbar from '../Appbar';
 import Content from '../partials/Content';
-import { DataGrid, ptBR } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  ptBR,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from '@mui/x-data-grid';
 import 'date-fns';
 import MomentUtils from '@date-io/moment';
 import {
