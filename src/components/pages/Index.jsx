@@ -4,10 +4,10 @@ import Appbar from '../Appbar';
 import Content from '../partials/Content';
 import { DataGrid, ptBR } from '@mui/x-data-grid';
 import 'date-fns';
-import { DatePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 //
+import moment from 'moment';
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -58,14 +58,15 @@ export default class Index extends Component {
   constructor() {
     super();
     this.state = {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: moment(new Date()).format('yyyy/MM/DD'),
+      endDate: null,
     };
   }
-  handleDateChange = (date, orientation) => {
-    console.log(date);
+  handleDateChange = (event, orientation) => {
+    const { target } = event;
+    // console.log(moment(target).format('DD/MM/YYYY'));
     this.setState({
-      [orientation]: date,
+      [orientation]: moment(target.value).format('DD/MM/YYYY'),
     });
   };
   render() {
@@ -81,16 +82,34 @@ export default class Index extends Component {
               justifyContent="center"
               alignItems="center"
             >
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label="Basic example"
-                  value={this.startDate}
-                  onChange={(newValue) => {
-                    this.handleDateChange(newValue, 'startDate');
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+              <Grid container justifyContent="space-around" p={3}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <TextField
+                    id="inicio"
+                    label="Início"
+                    type="date"
+                    sx={{ width: 220 }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(value) =>
+                      this.handleDateChange(value, 'startDate')
+                    }
+                  />
+                  <TextField
+                    id="fim"
+                    label="fim"
+                    type="date"
+                    sx={{ width: 220 }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(value) =>
+                      this.handleDateChange(value, 'endDate')
+                    }
+                  />
+                </LocalizationProvider>
+              </Grid>
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
                   localeText={ptBR.props.MuiDataGrid.localeText}
