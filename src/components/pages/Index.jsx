@@ -6,40 +6,90 @@ import { DataGrid, ptBR } from '@mui/x-data-grid';
 import 'date-fns';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-//
 import moment from 'moment';
+import axios from 'axios';
 const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
   {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
+    field: 'idPasseio',
+    headerName: 'ID',
     type: 'number',
-    width: 110,
-    editable: true,
+    minWidth: 100,
+    flex: 1,
+    headerAlign: 'center',
   },
   {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.getValue(params.id, 'firstName') || ''} ${
-        params.getValue(params.id, 'lastName') || ''
-      }`,
+    field: 'nomePasseio',
+    headerName: 'Passeio',
+    editable: true,
+    minWidth: 250,
+    flex: 1,
+    headerAlign: 'center',
   },
+  {
+    field: 'dataPasseio',
+    headerName: 'Data',
+    type: 'date',
+    editable: true,
+    minWidth: 110,
+    flex: 1,
+    headerAlign: 'center',
+  },
+  {
+    field: 'reservados',
+    headerName: 'Reservados',
+    type: 'number',
+    editable: true,
+    minWidth: 150,
+    flex: 1,
+    headerAlign: 'center',
+  },
+  {
+    field: 'Interessados',
+    headerName: 'Interessados',
+    type: 'number',
+    editable: true,
+    minWidth: 130,
+    flex: 1,
+    headerAlign: 'center',
+  },
+  {
+    field: 'parceiros',
+    headerName: 'Parceiros',
+    type: 'number',
+    editable: true,
+    minWidth: 130,
+    flex: 1,
+    headerAlign: 'center',
+  },
+  {
+    field: 'crianças',
+    headerName: 'Crianças',
+    type: 'number',
+    editable: true,
+    minWidth: 130,
+    flex: 1,
+    headerAlign: 'center',
+  },
+  {
+    field: 'lotacao',
+    headerName: 'Meta de vendas',
+    type: 'number',
+    editable: true,
+    minWidth: 130,
+    flex: 1,
+    headerAlign: 'center',
+  },
+  // {
+  //   field: 'interessados',
+  //   headerName: 'Full name',
+  //   description: 'This column has a value getter and is not sortable.',
+  //   sortable: false,
+  //   width: 160,
+  //   valueGetter: (params) =>
+  //     `${params.getValue(params.id, 'firstName') || ''} ${
+  //       params.getValue(params.id, 'lastName') || ''
+  //     }`,
+  // },
 ];
 
 const rows = [
@@ -58,15 +108,82 @@ export default class Index extends Component {
   constructor() {
     super();
     this.state = {
-      startDate: moment(new Date()).format('yyyy/MM/DD'),
+      startDate: null,
       endDate: null,
+      row: [],
     };
   }
-  handleDateChange = (event, orientation) => {
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = async () => {
+    // const { startDate, endDate } = this.state;
+    const startDate = '2020-01-01';
+    const endDate = '2030-01-01';
+    const data = new FormData();
+    data.append('id', 70);
+    try {
+      // const answer = await axios({
+      //   method: 'GET',
+      //   url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php?inicio=${moment(
+      //     startDate
+      //   ).format('yyyy-MM-DD')}&fim=${moment(endDate).format('yyyy-MM-DD')}`,
+      // });
+      const answer = await axios({
+        method: 'GET',
+        url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php`,
+      });
+      const {
+        data: { passeios },
+      } = answer;
+      // const payments = Object.entries(answer.data[0]);
+      // console.log(typeof passeios.passeio);
+      // console.log(passeios);
+
+      this.setState({
+        row: passeios[0],
+      });
+      // console.log(Object.entries(payments));
+      // const payments = await Promise.all(
+      //   passeios.map(async (passeio) => {
+      //     // const arr = payments.filter((payment) => payment[0] == passeio.idPasseio);
+      //     // return http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php?id=27
+      //     const pp = await axios({
+      //       method: 'GET',
+      //       url: `http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php?id=${passeio.idPasseio}`,
+      //     });
+      //     return pp.data;
+      //   })
+      // );
+      // payments.reduce((payment) => {
+      //   const [status] = Object.keys(payment.data.pagamentos);
+      // });
+      // payments.map((payment) => {
+      //   const status = Object.keys(payment.data.pagamentos);
+      // });
+      // console.log(...this.state.row);
+      // console.log(payments[0].data.pagamentos);
+      // console.log(passeios[0].idPasseio, payments[13]);
+      // const newObj = Object.assign(
+      //   {},
+      //   ...this.state.row.map((item) => ({ [item.key]: item.value }))
+      // );
+
+      console.log(this.state.row);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  handleDateChange = (event) => {
     const { target } = event;
-    // console.log(moment(target).format('DD/MM/YYYY'));
-    this.setState({
-      [orientation]: moment(target.value).format('DD/MM/YYYY'),
+    const { startDate, endDate } = this.state;
+
+    this.setState((prev, _props) => {
+      prev[target.id] = moment(target.value).format('DD/MM/YYYY');
+      if (!moment(prev.startDate).isValid() || !moment(prev.endDate).isValid())
+        return 0;
+      // this.fetchData();
     });
   };
   render() {
@@ -85,39 +202,36 @@ export default class Index extends Component {
               <Grid container justifyContent="space-around" p={3}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <TextField
-                    id="inicio"
+                    id="startDate"
                     label="Início"
                     type="date"
-                    sx={{ width: 220 }}
+                    sx={{ width: 220, marginBottom: '20px' }}
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    onChange={(value) =>
-                      this.handleDateChange(value, 'startDate')
-                    }
+                    onChange={this.handleDateChange}
                   />
                   <TextField
-                    id="fim"
+                    id="endDate"
                     label="fim"
                     type="date"
-                    sx={{ width: 220 }}
+                    sx={{ width: 220, marginBottom: '20px' }}
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    onChange={(value) =>
-                      this.handleDateChange(value, 'endDate')
-                    }
+                    onChange={this.handleDateChange}
                   />
                 </LocalizationProvider>
               </Grid>
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
                   localeText={ptBR.props.MuiDataGrid.localeText}
-                  rows={rows}
+                  rows={this.state.row}
+                  // onClick={console.log(this.state.row)}
+                  getRowId={(row) => row.idPasseio}
                   columns={columns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
-                  checkboxSelection
+                  // pageSize={5}
+                  // rowsPerPageOptions={[5]}
                   disableSelectionOnClick
                 />
               </div>
