@@ -26,6 +26,7 @@ const columns = [
     minWidth: 100,
     flex: 1,
     headerAlign: 'center',
+    align: 'center',
   },
   {
     field: 'nomePasseio',
@@ -45,7 +46,7 @@ const columns = [
     headerAlign: 'center',
   },
   {
-    field: 'reservados',
+    field: 'quitado',
     headerName: 'Reservados',
     type: 'number',
     editable: true,
@@ -54,7 +55,7 @@ const columns = [
     headerAlign: 'center',
   },
   {
-    field: 'Interessados',
+    field: 'interessado',
     headerName: 'Interessados',
     type: 'number',
     editable: true,
@@ -63,7 +64,7 @@ const columns = [
     headerAlign: 'center',
   },
   {
-    field: 'parceiros',
+    field: 'parceiro',
     headerName: 'Parceiros',
     type: 'number',
     editable: true,
@@ -72,7 +73,7 @@ const columns = [
     headerAlign: 'center',
   },
   {
-    field: 'crianças',
+    field: 'crianca',
     headerName: 'Crianças',
     type: 'number',
     editable: true,
@@ -88,6 +89,19 @@ const columns = [
     minWidth: 130,
     flex: 1,
     headerAlign: 'center',
+  },
+  {
+    field: 'disponivel',
+    headerName: 'Vagas disponíveis',
+    type: 'number',
+    editable: true,
+    minWidth: 130,
+    flex: 1,
+    headerAlign: 'center',
+    valueGetter: (params) => {
+      console.log(params);
+      return params.row.lotacao - params.row.quitado + params.row.confirmado;
+    },
   },
   // {
   //   field: 'interessados',
@@ -139,7 +153,6 @@ export default class Index extends Component {
     //   // ...column,
     //   dataKey: column.headerName,
     // }));
-    console.log(a);
     doc.save('table.pdf');
   };
   CustomToolbar = () => {
@@ -178,75 +191,18 @@ export default class Index extends Component {
       // });
       const answer = await axios({
         method: 'GET',
-        url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php`,
+        url: `http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php`,
       });
       const {
         data: { passeios },
       } = answer;
-      // const pagamentos = passeios[0].reduce(
-      //   (acc, curr) => {
-      //     const pagamentos = acc;
-      //     if (curr.statusPagamento === 0) acc.interessados += 1;
-      //     if (curr.statusPagamento === 1) acc.quitados += 1;
-      //     if (curr.statusPagamento === 2) acc.confirmados += 1;
-      //     if (curr.statusPagamento === 3) acc.parceiros += 1;
-      //     if (curr.statusPagamento === 4) acc.criancas += 1;
-      //     return pagamentos;
-      //   },
-      //   {
-      //     interessados: 0,
-      //     quitados: 0,
-      //     confirmados: 0,
-      //     parceiros: 0,
-      //     criancas: 0,
-      //   }
-      // );
-      // passeios[0].forEach((p) =>
-      //   p.pagamentos.reduce(
-      //     (acc, curr) => {
-      //       const pagamentos = acc;
-      //       if (curr.statusPagamento === 0) acc.interessados += 1;
-      //       if (curr.statusPagamento === 1) acc.quitados += 1;
-      //       if (curr.statusPagamento === 2) acc.confirmados += 1;
-      //       if (curr.statusPagamento === 3) acc.parceiros += 1;
-      //       if (curr.statusPagamento === 4) acc.criancas += 1;
-      //       return pagamentos;
-      //     },
-      //     {
-      //       interessados: 0,
-      //       quitados: 0,
-      //       confirmados: 0,
-      //       parceiros: 0,
-      //       criancas: 0,
-      //     }
-      //   )
-      // );
-      // const a = passeios[0].map((p) =>
-      //   p.pagamentos.reduce(
-      //     (acc, curr) => {
-      //       const pagamentos = acc;
-      //       if (curr.statusPagamento === 0) acc.interessados += 1;
-      //       if (curr.statusPagamento === 1) acc.quitados += 1;
-      //       if (curr.statusPagamento === 2) acc.confirmados += 1;
-      //       if (curr.statusPagamento === 3) acc.parceiros += 1;
-      //       if (curr.statusPagamento === 4) acc.criancas += 1;
-      //       return pagamentos;
-      //     },
-      //     {
-      //       interessados: 0,
-      //       quitados: 0,
-      //       confirmados: 0,
-      //       parceiros: 0,
-      //       criancas: 0,
-      //     }
-      //   )
-      // );
+      // let a = null;
+      // passeios.forEach((passeio) => {
+      //   Object.assign(passeio, passeio.pagamentos);
+      // });
       this.setState({
-        row: passeios[0],
+        row: passeios,
       });
-      console.log(passeios[0]);
-
-      // console.log(pagamentos);
     } catch (err) {
       console.error(err);
     }
@@ -307,7 +263,6 @@ export default class Index extends Component {
                   className="opa"
                   localeText={ptBR.props.MuiDataGrid.localeText}
                   rows={this.state.row}
-                  // onClick={console.log(this.state.row)}
                   getRowId={(row) => row.idPasseio}
                   columns={columns}
                   disableSelectionOnClick
