@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { Grid, IconButton, TextField, LinearProgress } from '@mui/material';
+import {
+  Grid,
+  IconButton,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+} from '@mui/material';
 import Appbar from '../Appbar';
 import Content from '../partials/Content';
 import {
@@ -119,13 +125,16 @@ export default class Index extends Component {
     this.state = {
       startDate: null,
       endDate: null,
+      showCloseds: false,
       row: [],
     };
   }
+
   componentDidMount() {
     this.fetchData();
   }
-  handleClick = () => {
+
+  handlePrint = () => {
     const doc = new jsPDF();
     doc.text('RELATÓRIO GERENCIAL DE VENDAS', 20, 10);
     const a = this.state.row.map((column) => Object.values(column));
@@ -136,6 +145,51 @@ export default class Index extends Component {
     });
 
     doc.save('table.pdf');
+  };
+
+  fetchData = async () => {
+    const { startDate, endDate, showCloseds } = this.state;
+    // const startDate = '2020-01-01';
+    // const endDate = '2030-01-01';
+    // const showCloseds = true;
+    const data = new FormData();
+    data.append('id', 70);
+    try {
+      const answer = await axios({
+        method: 'GET',
+        url: `http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php?inicio=${moment(
+          startDate
+        ).format('yyyy-MM-DD')}&fim=${moment(endDate).format(
+          'yyyy-MM-DD'
+        )}&exibirEncerrados=${showCloseds}`,
+      });
+      const {
+        data: { passeios },
+      } = answer;
+      console.log(answer);
+
+      this.setState({
+        row: passeios,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  handleDateChange = (event) => {
+    const { target } = event;
+    this.setState({ [target.id]: moment(target.value).format() }, () => {
+      const { startDate, endDate } = this.state;
+      if (!moment(startDate).isValid() || !moment(endDate).isValid()) {
+        return 0;
+      }
+      this.fetchData();
+    });
+  };
+  handleChange = ({ target }) => {
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.setState({
+      [target.id]: value,
+    });
   };
   CustomToolbar = () => {
     return (
@@ -149,57 +203,14 @@ export default class Index extends Component {
           edge="start"
           color="primary"
           aria-label="menu"
-          onClick={() => this.handleClick('appBarOpened', true)}
+          onClick={() => this.handlePrint('appBarOpened', true)}
         >
-          {/* <GridToolbarExport /> */}
           <LocalPrintshopIcon />
         </IconButton>
       </GridToolbarContainer>
     );
   };
 
-  fetchData = async () => {
-    const { startDate, endDate } = this.state;
-    // const startDate = '2020-01-01';
-    // const endDate = '2030-01-01';
-    const data = new FormData();
-    data.append('id', 70);
-    try {
-      const answer = await axios({
-        method: 'GET',
-        url: `http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php`,
-      });
-      // const answer = await axios({
-      //   method: 'GET',
-      //   url: `http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php?inicio=${moment(
-      //     startDate
-      //   ).format('yyyy-MM-DD')}&fim=${moment(endDate).format('yyyy-MM-DD')}`,
-      // });
-      const {
-        data: { passeios },
-      } = answer;
-
-      this.setState({
-        row: passeios,
-      });
-      console.log(
-        `http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php?inicio=${moment(
-          startDate
-        ).format('yyyy-MM-DD')}&fim=${moment(endDate).format('yyyy-MM-DD')}`
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-  handleDateChange = (event) => {
-    const { target } = event;
-    this.setState((prev, _props) => {
-      prev[target.id] = moment(target.value).format('DD/MM/YYYY');
-      if (!moment(prev.startDate).isValid() || !moment(prev.endDate).isValid())
-        return 0;
-      this.fetchData();
-    });
-  };
   render() {
     return (
       <>
@@ -236,6 +247,18 @@ export default class Index extends Component {
                     onChange={this.handleDateChange}
                   />
                 </LocalizationProvider>
+                <Grid container justifyContent="space-around">
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onClick={this.handleChange}
+                        id="showCloseds"
+                      />
+                    }
+                    label="Exibir Encerrados"
+                  />
+                </Grid>
               </Grid>
               <div style={{ height: 700, width: '100%' }}>
                 <DataGrid
