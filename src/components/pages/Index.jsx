@@ -8,6 +8,9 @@ import 'date-fns';
 import moment from 'moment';
 import axios from 'axios';
 import 'jspdf-autotable';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const columns = [
   {
     field: 'idPasseio',
@@ -118,12 +121,12 @@ export default class Index extends Component {
       tableConfig: {},
     };
   }
-
   componentDidMount() {
     this.fetchData();
   }
 
   fetchData = async () => {
+    // this.notify();
     const { startDate, endDate, showCloseds, isRangeDateValid } = this.state;
     // const startDate = '2020-01-01';
     // const endDate = '2030-01-01';
@@ -154,11 +157,17 @@ export default class Index extends Component {
       });
       console.log(answer);
     } catch (err) {
-      console.error(err);
+      toast.error('Houve um problema ao buscar informações, tente novamente!', {
+        pauseOnFocusLoss: false,
+      });
+      this.setState({
+        isLoading: false,
+      });
+      // console.error(err);
     }
   };
-  handleDateChange = (event) => {
-    const { target } = event;
+
+  handleDateChange = ({ target }) => {
     this.setState({ [target.id]: moment(target.value).format() }, () => {
       const { startDate, endDate } = this.state;
       let isDateValid;
@@ -180,6 +189,7 @@ export default class Index extends Component {
 
   render() {
     const { isLoading, row } = this.state;
+
     return (
       <>
         <Appbar />
@@ -208,6 +218,7 @@ export default class Index extends Component {
                 />
               </Grid>
             </Grid>
+            <ToastContainer pauseOnFocusLoss />
           </Grid>
         </Content>
       </>
