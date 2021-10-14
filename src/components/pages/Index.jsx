@@ -10,8 +10,6 @@ import {
 import Appbar from '../Appbar';
 import Content from '../partials/Content';
 import {
-  DataGrid,
-  ptBR,
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
@@ -27,6 +25,7 @@ import moment from 'moment';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import TableComponent from '../partials/TableComponent';
 const columns = [
   {
     field: 'idPasseio',
@@ -133,6 +132,7 @@ export default class Index extends Component {
       showCloseds: false,
       row: [],
       isLoading: false,
+      tableConfig: {},
     };
   }
 
@@ -201,11 +201,7 @@ export default class Index extends Component {
   };
   CustomToolbar = () => {
     return (
-      <GridToolbarContainer
-        xs={{ marginBottom: 100 }}
-        container
-        justifyContent="space-around"
-      >
+      <GridToolbarContainer xs={{ marginBottom: 100 }}>
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
@@ -231,8 +227,8 @@ export default class Index extends Component {
       </GridOverlay>
     );
   };
-
   render() {
+    const { isLoading, row } = this.state;
     return (
       <>
         <Appbar />
@@ -280,22 +276,15 @@ export default class Index extends Component {
                     label="Exibir Encerrados"
                   />
                 </Grid>
-              </Grid>
-              <div style={{ height: 400, width: '100%' }}>
-                <DataGrid
-                  components={{
-                    Toolbar: this.CustomToolbar,
-                    LoadingOverlay: this.CustomLoadingOverlay,
-                  }}
-                  loading={this.state.isLoading}
-                  className="opa"
-                  localeText={ptBR.props.MuiDataGrid.localeText}
-                  rows={this.state.row}
-                  getRowId={(row) => row.idPasseio}
+                <TableComponent
                   columns={columns}
-                  disableSelectionOnClick
+                  row={row}
+                  id="idPasseio"
+                  isLoading={isLoading}
+                  CustomToolbar={this.CustomToolbar}
+                  CustomLoadingOverlay={this.CustomLoadingOverlay}
                 />
-              </div>
+              </Grid>
             </Grid>
           </Grid>
         </Content>
