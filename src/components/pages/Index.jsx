@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Appbar from '../Appbar';
 import Content from '../partials/Content';
 import TableComponent from '../partials/TableComponent';
 import DateRange from '../partials/DateRange';
@@ -192,7 +191,6 @@ export default class Index extends Component {
 
     return (
       <>
-        <Appbar />
         <Content cardTitle="Relatório Gerencial de Vendas">
           <Grid container>
             <Grid
