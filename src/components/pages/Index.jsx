@@ -207,19 +207,19 @@ export default class Index extends Component {
                   handleChange={this.handleChange}
                   handleDateChange={this.handleDateChange}
                 />
-                <TableComponent
-                  columns={columns}
-                  row={row}
-                  id="idPasseio"
-                  isLoading={isLoading}
-                  CustomToolbar={this.CustomToolbar}
-                  CustomLoadingOverlay={this.CustomLoadingOverlay}
-                  col={col}
-                />
               </Grid>
             </Grid>
             <ToastContainer pauseOnFocusLoss />
           </Grid>
+          <TableComponent
+            columns={columns}
+            row={row}
+            id="idPasseio"
+            isLoading={isLoading}
+            CustomToolbar={this.CustomToolbar}
+            CustomLoadingOverlay={this.CustomLoadingOverlay}
+            col={col}
+          />
         </Content>
       </>
     );
