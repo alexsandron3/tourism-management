@@ -5,6 +5,7 @@ import { Grid, TextField, FormControlLabel, Checkbox } from '@mui/material';
 
 class DateRange extends Component {
   render() {
+    const { handleChange, handleDateChange } = this.props;
     return (
       <Grid container justifyContent="space-around">
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -16,7 +17,7 @@ class DateRange extends Component {
             InputLabelProps={{
               shrink: true,
             }}
-            onChange={this.handleDateChange}
+            onChange={handleDateChange}
           />
           <TextField
             id="endDate"
@@ -26,17 +27,13 @@ class DateRange extends Component {
             InputLabelProps={{
               shrink: true,
             }}
-            onChange={this.handleDateChange}
+            onChange={handleDateChange}
           />
         </LocalizationProvider>
         <Grid container justifyContent="space-around">
           <FormControlLabel
             control={
-              <Checkbox
-                size="small"
-                onClick={this.handleChange}
-                id="showCloseds"
-              />
+              <Checkbox size="small" onClick={handleChange} id="showCloseds" />
             }
             label="Exibir Encerrados"
           />

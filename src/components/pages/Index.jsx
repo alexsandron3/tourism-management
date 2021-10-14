@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { Grid } from '@mui/material';
 import Appbar from '../Appbar';
 import Content from '../partials/Content';
+import TableComponent from '../partials/TableComponent';
+import DateRange from '../partials/DateRange';
+import { Grid } from '@mui/material';
 import 'date-fns';
 import moment from 'moment';
 import axios from 'axios';
 import 'jspdf-autotable';
-import TableComponent from '../partials/TableComponent';
-import DateRange from '../partials/DateRange';
 const columns = [
   {
     field: 'idPasseio',
@@ -114,6 +114,7 @@ export default class Index extends Component {
       showCloseds: false,
       row: [],
       isLoading: false,
+      isRangeDateValid: false,
       tableConfig: {},
     };
   }
@@ -123,12 +124,16 @@ export default class Index extends Component {
   }
 
   fetchData = async () => {
-    // const { startDate, endDate, showCloseds } = this.state;
-    const startDate = '2020-01-01';
-    const endDate = '2030-01-01';
-    const showCloseds = true;
-    const data = new FormData();
-    data.append('id', 70);
+    const { startDate, endDate, showCloseds, isRangeDateValid } = this.state;
+    // const startDate = '2020-01-01';
+    // const endDate = '2030-01-01';
+    // const showCloseds = true;
+    // const isRangeDateValid = true;
+    // const data = new FormData();
+    // data.append('id', 70);
+
+    if (isRangeDateValid === false) return 0;
+    console.log('opa');
     try {
       this.setState({ isLoading: true });
       const answer = await axios({
@@ -147,6 +152,7 @@ export default class Index extends Component {
         row: passeios,
         isLoading: false,
       });
+      console.log(answer);
     } catch (err) {
       console.error(err);
     }
@@ -155,10 +161,13 @@ export default class Index extends Component {
     const { target } = event;
     this.setState({ [target.id]: moment(target.value).format() }, () => {
       const { startDate, endDate } = this.state;
-      if (!moment(startDate).isValid() || !moment(endDate).isValid()) {
-        return 0;
+      let isDateValid;
+      if (moment(startDate).isValid() && moment(endDate).isValid()) {
+        isDateValid = true;
+      } else {
+        isDateValid = false;
       }
-      this.fetchData();
+      this.setState({ isRangeDateValid: isDateValid }, () => this.fetchData());
     });
   };
   handleChange = ({ target }) => {
@@ -184,7 +193,10 @@ export default class Index extends Component {
               alignItems="center"
             >
               <Grid container justifyContent="space-around" p={3}>
-                <DateRange />
+                <DateRange
+                  handleChange={this.handleChange}
+                  handleDateChange={this.handleDateChange}
+                />
                 <TableComponent
                   columns={columns}
                   row={row}
