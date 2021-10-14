@@ -7,10 +7,10 @@ function App() {
   return (
     <>
     {/* <Appbar /> */}
-      {/* <Index /> */}
-      <MyContextProvider>
-        <Home />
-      </MyContextProvider>
+      <Index />
+      {/* <MyContextProvider> */}
+        {/* <Home /> */}
+      {/* </MyContextProvider> */}
     </>
   );
 }
