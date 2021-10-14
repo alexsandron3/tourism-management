@@ -1,29 +1,12 @@
 import React, { Component } from 'react';
-import {
-  Grid,
-  IconButton,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  LinearProgress,
-} from '@mui/material';
+import { Grid, TextField, FormControlLabel, Checkbox } from '@mui/material';
 import Appbar from '../Appbar';
 import Content from '../partials/Content';
-import {
-  GridToolbarContainer,
-  GridToolbarColumnsButton,
-  GridToolbarFilterButton,
-  GridToolbarDensitySelector,
-  GridToolbarExport,
-  GridOverlay,
-} from '@mui/x-data-grid';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import 'date-fns';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import moment from 'moment';
 import axios from 'axios';
-import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import TableComponent from '../partials/TableComponent';
 const columns = [
@@ -140,19 +123,6 @@ export default class Index extends Component {
     this.fetchData();
   }
 
-  handlePrint = () => {
-    const doc = new jsPDF();
-    doc.text('RELATÓRIO GERENCIAL DE VENDAS', 20, 10);
-    const a = this.state.row.map((column) => Object.values(column));
-    doc.autoTable({
-      columns: [...col],
-
-      body: [...a],
-    });
-
-    doc.save('table.pdf');
-  };
-
   fetchData = async () => {
     // const { startDate, endDate, showCloseds } = this.state;
     const startDate = '2020-01-01';
@@ -199,34 +169,7 @@ export default class Index extends Component {
     });
     this.fetchData();
   };
-  CustomToolbar = () => {
-    return (
-      <GridToolbarContainer xs={{ marginBottom: 100 }}>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <GridToolbarExport />
-        <IconButton
-          size="large"
-          edge="start"
-          color="primary"
-          aria-label="menu"
-          onClick={() => this.handlePrint('appBarOpened', true)}
-        >
-          <LocalPrintshopIcon />
-        </IconButton>
-      </GridToolbarContainer>
-    );
-  };
-  CustomLoadingOverlay = () => {
-    return (
-      <GridOverlay>
-        <div style={{ position: 'absolute', top: 0, width: '100%' }}>
-          <LinearProgress />
-        </div>
-      </GridOverlay>
-    );
-  };
+
   render() {
     const { isLoading, row } = this.state;
     return (
@@ -283,6 +226,7 @@ export default class Index extends Component {
                   isLoading={isLoading}
                   CustomToolbar={this.CustomToolbar}
                   CustomLoadingOverlay={this.CustomLoadingOverlay}
+                  col={col}
                 />
               </Grid>
             </Grid>
