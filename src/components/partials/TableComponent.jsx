@@ -56,8 +56,7 @@ class TableComponent extends Component {
     );
   };
   render() {
-    const { columns, row, id, isLoading, CustomToolbar, CustomLoadingOverlay } =
-      this.props;
+    const { columns, row, id, isLoading } = this.props;
     return (
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
