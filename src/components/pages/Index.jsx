@@ -15,6 +15,8 @@ import {
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
+  GridToolbar,
+  GridToolbarExport,
 } from '@mui/x-data-grid';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import 'date-fns';
@@ -41,6 +43,7 @@ const columns = [
     minWidth: 250,
     flex: 1,
     headerAlign: 'center',
+    align: 'center',    
   },
   {
     field: 'dataPasseio',
@@ -49,63 +52,63 @@ const columns = [
     editable: true,
     minWidth: 180,
     flex: 1,
-    headerAlign: 'center',
     valueFormatter: (params) => moment(params.dataPasseio).format('DD/MM/yyyy'),
-  },
+    headerAlign: 'center',
+    align: 'center',  },
   {
     field: 'quitado',
     headerName: 'Reservados',
     type: 'number',
-    editable: true,
     minWidth: 150,
     flex: 1,
     headerAlign: 'center',
+    align: 'center',  
   },
   {
     field: 'interessado',
     headerName: 'Interessados',
     type: 'number',
-    editable: true,
     minWidth: 130,
     flex: 1,
     headerAlign: 'center',
+    align: 'center',
   },
   {
     field: 'parceiro',
     headerName: 'Parceiros',
     type: 'number',
-    editable: true,
     minWidth: 130,
     flex: 1,
     headerAlign: 'center',
+    align: 'center',
   },
   {
     field: 'crianca',
     headerName: 'Crianças',
     type: 'number',
-    editable: true,
     minWidth: 130,
     flex: 1,
     headerAlign: 'center',
+    align: 'center',
   },
   {
     field: 'lotacao',
     headerName: 'Meta de vendas',
     type: 'number',
-    editable: true,
     minWidth: 130,
     flex: 1,
     headerAlign: 'center',
+    align: 'center',
   },
   {
     field: 'disponivel',
     headerName: 'Vagas disponíveis',
     type: 'number',
-    editable: true,
     minWidth: 130,
-    headerAlign: 'center',
     valueGetter: (params) =>
-      params.row.lotacao - params.row.quitado + params.row.confirmado,
+    params.row.lotacao - params.row.quitado + params.row.confirmado,
+    headerAlign: 'center',
+    align: 'center',
   },
 ];
 const col = [
@@ -148,16 +151,16 @@ export default class Index extends Component {
   };
 
   fetchData = async () => {
-    const { startDate, endDate, showCloseds } = this.state;
-    // const startDate = '2020-01-01';
-    // const endDate = '2030-01-01';
-    // const showCloseds = true;
+    // const { startDate, endDate, showCloseds } = this.state;
+    const startDate = '2020-01-01';
+    const endDate = '2030-01-01';
+    const showCloseds = true;
     const data = new FormData();
     data.append('id', 70);
     try {
       const answer = await axios({
         method: 'GET',
-        url: `https://fabiopasseios.com.br/api/pagamento.php?inicio=${moment(
+        url: `http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php?inicio=${moment(
           startDate
         ).format('yyyy-MM-DD')}&fim=${moment(endDate).format(
           'yyyy-MM-DD'
@@ -190,14 +193,16 @@ export default class Index extends Component {
     this.setState({
       [target.id]: value,
     });
+    this.fetchData();
+
   };
   CustomToolbar = () => {
     return (
-      <GridToolbarContainer xs={{ marginBottom: 100 }}>
+      <GridToolbarContainer xs={{ marginBottom: 100 }} container justifyContent="space-around">
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
-
+        <GridToolbarExport />
         <IconButton
           size="large"
           edge="start"
@@ -260,7 +265,7 @@ export default class Index extends Component {
                   />
                 </Grid>
               </Grid>
-              <div style={{ height: 700, width: '100%' }}>
+              <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
                   components={{
                     Toolbar: this.CustomToolbar,
