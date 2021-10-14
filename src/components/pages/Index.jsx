@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { Grid, TextField, FormControlLabel, Checkbox } from '@mui/material';
+import { Grid } from '@mui/material';
 import Appbar from '../Appbar';
 import Content from '../partials/Content';
 import 'date-fns';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import moment from 'moment';
 import axios from 'axios';
 import 'jspdf-autotable';
 import TableComponent from '../partials/TableComponent';
+import DateRange from '../partials/DateRange';
 const columns = [
   {
     field: 'idPasseio',
@@ -185,40 +184,7 @@ export default class Index extends Component {
               alignItems="center"
             >
               <Grid container justifyContent="space-around" p={3}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <TextField
-                    id="startDate"
-                    label="Início"
-                    type="date"
-                    sx={{ width: 220, marginBottom: '20px' }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={this.handleDateChange}
-                  />
-                  <TextField
-                    id="endDate"
-                    label="fim"
-                    type="date"
-                    sx={{ width: 220, marginBottom: '20px' }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={this.handleDateChange}
-                  />
-                </LocalizationProvider>
-                <Grid container justifyContent="space-around">
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        size="small"
-                        onClick={this.handleChange}
-                        id="showCloseds"
-                      />
-                    }
-                    label="Exibir Encerrados"
-                  />
-                </Grid>
+                <DateRange />
                 <TableComponent
                   columns={columns}
                   row={row}
