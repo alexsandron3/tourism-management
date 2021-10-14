@@ -5,6 +5,7 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
+  LinearProgress,
 } from '@mui/material';
 import Appbar from '../Appbar';
 import Content from '../partials/Content';
@@ -16,6 +17,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
   GridToolbarExport,
+  GridOverlay,
 } from '@mui/x-data-grid';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import 'date-fns';
@@ -42,7 +44,7 @@ const columns = [
     minWidth: 250,
     flex: 1,
     headerAlign: 'center',
-    align: 'center',    
+    align: 'center',
   },
   {
     field: 'dataPasseio',
@@ -53,7 +55,8 @@ const columns = [
     flex: 1,
     // valueFormatter: (params) => moment(params.dataPasseio).format('MM/DD/yyyy'),
     headerAlign: 'center',
-    align: 'center',  },
+    align: 'center',
+  },
   {
     field: 'quitado',
     headerName: 'Reservados',
@@ -61,7 +64,7 @@ const columns = [
     minWidth: 100,
     flex: 1,
     headerAlign: 'center',
-    align: 'center',  
+    align: 'center',
   },
   {
     field: 'interessado',
@@ -105,7 +108,7 @@ const columns = [
     type: 'number',
     minWidth: 100,
     valueGetter: (params) =>
-    params.row.lotacao - params.row.quitado + params.row.confirmado,
+      params.row.lotacao - params.row.quitado + params.row.confirmado,
     headerAlign: 'center',
     align: 'center',
   },
@@ -129,6 +132,7 @@ export default class Index extends Component {
       endDate: null,
       showCloseds: false,
       row: [],
+      isLoading: false,
     };
   }
 
@@ -157,6 +161,7 @@ export default class Index extends Component {
     const data = new FormData();
     data.append('id', 70);
     try {
+      this.setState({ isLoading: true });
       const answer = await axios({
         method: 'GET',
         url: `http://localhost/Projetos/SistemaFabio-2.0/api/pagamento.php?inicio=${moment(
@@ -168,10 +173,10 @@ export default class Index extends Component {
       const {
         data: { passeios },
       } = answer;
-      console.log(answer);
 
       this.setState({
         row: passeios,
+        isLoading: false,
       });
     } catch (err) {
       console.error(err);
@@ -193,11 +198,14 @@ export default class Index extends Component {
       [target.id]: value,
     });
     this.fetchData();
-
   };
   CustomToolbar = () => {
     return (
-      <GridToolbarContainer xs={{ marginBottom: 100 }} container justifyContent="space-around">
+      <GridToolbarContainer
+        xs={{ marginBottom: 100 }}
+        container
+        justifyContent="space-around"
+      >
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
@@ -212,6 +220,15 @@ export default class Index extends Component {
           <LocalPrintshopIcon />
         </IconButton>
       </GridToolbarContainer>
+    );
+  };
+  CustomLoadingOverlay = () => {
+    return (
+      <GridOverlay>
+        <div style={{ position: 'absolute', top: 0, width: '100%' }}>
+          <LinearProgress />
+        </div>
+      </GridOverlay>
     );
   };
 
@@ -268,7 +285,9 @@ export default class Index extends Component {
                 <DataGrid
                   components={{
                     Toolbar: this.CustomToolbar,
+                    LoadingOverlay: this.CustomLoadingOverlay,
                   }}
+                  loading={this.state.isLoading}
                   className="opa"
                   localeText={ptBR.props.MuiDataGrid.localeText}
                   rows={this.state.row}
