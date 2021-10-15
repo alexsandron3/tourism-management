@@ -3,6 +3,8 @@ import Content from '../../partials/Content';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import TableComponent from '../../partials/TableComponent';
+import axios from 'axios';
+import { Button } from '@mui/material';
 const columns = [
   {
     field: 'idCliente',
@@ -14,6 +16,22 @@ const columns = [
     align: 'center',
   },
   {
+    field: 'date',
+    headerName: 'Year',
+    renderCell: (params) => (
+      <strong>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          style={{ marginLeft: 16 }}
+        >
+          Open
+        </Button>
+      </strong>
+    ),
+  },
+  {
     field: 'nomeCliente',
     headerName: 'Nome',
     editable: true,
@@ -23,8 +41,8 @@ const columns = [
     align: 'center',
   },
   {
-    field: 'idade',
-    headerName: 'idade',
+    field: 'idadeCliente',
+    headerName: 'Idade',
     type: 'number',
     editable: true,
     minWidth: 110,
@@ -43,7 +61,7 @@ const columns = [
     align: 'center',
   },
   {
-    field: 'Telefone',
+    field: 'telefoneCliente',
     headerName: 'Telefone',
     minWidth: 200,
     editable: true,
@@ -52,7 +70,7 @@ const columns = [
     align: 'center',
   },
   {
-    field: 'email',
+    field: 'emailCliente',
     headerName: 'Email',
     minWidth: 150,
     editable: true,
@@ -70,62 +88,47 @@ const columns = [
     headerAlign: 'center',
     align: 'center',
   },
-  {
-    field: 'acao',
-    headerName: 'Meta de vendas',
-    type: 'number',
-    minWidth: 100,
-    flex: 1,
-    headerAlign: 'center',
-    align: 'center',
-  },
-];
-const row = [
-  {
-    idCliente: 1,
-    nomeCliente: 1,
-    idade: 1,
-    referencia: 1,
-    Telefone: 1,
-    email: 1,
-    redeSocial: 1,
-    acao: 1,
-  },
-  {
-    idCliente: 2,
-    nomeCliente: 1,
-    idade: 1,
-    referencia: 1,
-    Telefone: 1,
-    email: 1,
-    redeSocial: 1,
-    acao: 1,
-  },
 ];
 const col = [
   'ID',
-  'Passeio',
-  'Data',
-  'Reservados',
-  'Interessados',
-  'Parceiros',
-  'Crianças',
-  'Meta de vendas',
+  'Nome',
+  'Idade',
+  'Referencia',
+  'Telefone',
+  'Email',
+  'Rede Social',
 ];
 class Cliente extends Component {
   constructor() {
     super();
     this.state = {
       pesquisarCliente: '',
+      row: [],
+      isLoading: false,
     };
   }
-  fetchUser = async () => {};
-  handleChange = ({ target }) => {
-    this.setState({ pesquisarCliente: target.value });
+  componentDidMount() {
     this.fetchUser();
+  }
+  fetchUser = async () => {
+    // const { pesquisarCliente } = this.state;
+    const pesquisarCliente = '167.489';
+    const {
+      data: { usuario },
+    } = await axios({
+      method: 'GET',
+      url: `http://localhost/Projetos/SistemaFabio-2.0/api/Cliente.php?pesquisarCliente=${pesquisarCliente}`,
+    });
+    this.setState({ row: usuario, isLoading: false });
+    console.log(usuario);
+  };
+  handleChange = ({ target }) => {
+    this.setState({ pesquisarCliente: target.value, isLoading: true }, () =>
+      this.fetchUser()
+    );
   };
   render() {
-    const { pesquisarCliente } = this.state;
+    const { pesquisarCliente, row, isLoading } = this.state;
     return (
       <Content cardTitle="Pesquisar Cliente">
         <Grid container>
@@ -139,7 +142,13 @@ class Cliente extends Component {
             />
           </Grid>
         </Grid>
-        <TableComponent columns={columns} row={row} id="idCliente" col={col} />
+        <TableComponent
+          columns={columns}
+          row={row}
+          id="idCliente"
+          col={col}
+          isLoading={isLoading}
+        />
       </Content>
     );
   }
