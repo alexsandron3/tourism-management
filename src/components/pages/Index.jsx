@@ -214,8 +214,6 @@ export default class Index extends Component {
             row={row}
             id="idPasseio"
             isLoading={isLoading}
-            CustomToolbar={this.CustomToolbar}
-            CustomLoadingOverlay={this.CustomLoadingOverlay}
             col={col}
           />
         </Content>

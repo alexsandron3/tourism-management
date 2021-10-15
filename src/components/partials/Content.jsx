@@ -7,7 +7,13 @@ export default class Content extends Component {
         <Grid item xs={12} md={10} lg={10} p={3}>
           <Card elevation={24} p={6}>
             <CardContent>
-              <Typography variant="h4" mt={4} textAlign="center">
+              <Typography
+                variant="h4"
+                mt={4}
+                textAlign="center"
+                p={3}
+                marginBottom={3}
+              >
                 {this.props.cardTitle}
               </Typography>
               {this.props.children}
