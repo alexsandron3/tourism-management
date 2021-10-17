@@ -12,6 +12,8 @@ import {
   ListItemIcon,
   Collapse,
 } from '@mui/material';
+import { Link } from 'react-router-dom';
+
 import { withStyles } from '@mui/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -88,13 +90,14 @@ class Appbar extends Component {
           </Box>
           <List>
             {/* Menu */}
-            <ListItemButton>
-              <ListItemIcon>
-                <HomeOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Início" />
-            </ListItemButton>
-
+            <Link to="/">
+              <ListItemButton>
+                <ListItemIcon>
+                  <HomeOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Início" />
+              </ListItemButton>
+            </Link>
             {/* Register */}
             <ListItemButton
               onClick={() =>

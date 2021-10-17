@@ -1,10 +1,9 @@
 import Index from './components/pages/Index';
 import Appbar from './components/Appbar';
-import Login from './components/pages/Login';
 import Cliente from './components/pages/Pesquisar/Cliente';
 import Passeio from './components/pages/Pesquisar/Passeio';
-import Home from './components/pages/Home';
-import MyContextProvider from './contexts/MyContext';
+import CadPasseio from './components/pages/Cadastrar/Passeio';
+import CadCliente from './components/pages/Cadastrar/Cliente';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 function App() {
   return (
@@ -14,6 +13,8 @@ function App() {
       <Switch> 
         <Route path="/pesquisar/cliente" component={Cliente} />
         <Route path="/pesquisar/passeio" component={Passeio} />
+        <Route path="/cadastrar/cliente" component={CadCliente} />
+        <Route path="/cadastrar/passeio" component={CadPasseio} />
         <Route path="/" component={Index} />
       </Switch>
     </BrowserRouter>
