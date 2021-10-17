@@ -4,13 +4,14 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import TableComponent from '../../partials/TableComponent';
 import axios from 'axios';
-import { IconButton } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import { Link } from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // const columns = [
 //   {
 //     field: 'idCliente',
@@ -126,21 +127,31 @@ class Cliente extends Component {
     this.fetchUser();
   }
   fetchUser = async () => {
-    // const { pesquisarCliente } = this.state;
-    const pesquisarCliente = '167';
+    const { pesquisarCliente } = this.state;
+    this.setState({ isLoading: true });
     const {
-      data: { usuario },
+      data: { usuario = [], success, message },
     } = await axios({
       method: 'GET',
       url: `http://localhost/Projetos/SistemaFabio-2.0/api/Cliente.php?pesquisarCliente=${pesquisarCliente}`,
     });
-    this.setState({ row: usuario, isLoading: false });
-    console.log(usuario);
+    if (success) {
+      toast.success(message, {
+        pauseOnFocusLoss: false,
+      });
+    } else {
+      toast.error(message, {
+        pauseOnFocusLoss: false,
+      });
+    }
+    try {
+      this.setState({ row: usuario, isLoading: false });
+    } catch (error) {
+      console.error(error);
+    }
   };
   handleChange = ({ target }) => {
-    this.setState({ pesquisarCliente: target.value, isLoading: true }, () =>
-      this.fetchUser()
-    );
+    this.setState({ pesquisarCliente: target.value });
   };
   handleClick = (target) => {
     console.log(target.currentTarget);
@@ -279,13 +290,19 @@ class Cliente extends Component {
       <Content cardTitle="Pesquisar Cliente">
         <Grid container>
           <Grid item xs={12} marginBottom={3}>
-            <TextField
-              id="pesquisarCliente"
-              label="Nome/Cpf/Telefone/Referência"
-              fullWidth
-              value={pesquisarCliente}
-              onChange={this.handleChange}
-            />
+            <form action="" onSubmit={(e) => e.preventDefault()}>
+              <TextField
+                id="pesquisarCliente"
+                label="Nome/Cpf/Telefone/Referência"
+                fullWidth
+                value={pesquisarCliente}
+                onChange={this.handleChange}
+                sx={{ marginBottom: 2 }}
+              />
+              <Button type="submit" onClick={this.fetchUser}>
+                Pesquisar
+              </Button>
+            </form>
           </Grid>
         </Grid>
         <TableComponent
@@ -295,6 +312,7 @@ class Cliente extends Component {
           col={col}
           isLoading={isLoading}
         />
+        <ToastContainer pauseOnFocusLoss />
       </Content>
     );
   }
