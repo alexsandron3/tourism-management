@@ -12,24 +12,34 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { Button } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import axios from 'axios';
+import moment from 'moment';
 
 class Passeio extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nomePasseio: '',
+      nomePasseio: 'asd',
       localPasseio: '',
-      valorPasseio: '',
-      lotacao: '',
-      idadeIsencao: '',
+      valorPasseio: 0,
+      lotacao: 0,
+      idadeIsencao: 5,
       anotacoes: '',
       itensPacote: '',
-      statusPasseio: '',
+      dataPasseio: '',
+      statusPasseio: 1,
+      dataLancamento: '',
+      prazoVigencia: '',
     };
   }
+
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
+
   handleNumbers = ({ target }) => {
     if (/^[0-9.]*$/.test(target.value)) {
       this.setState({ [target.name]: target.value });
@@ -48,8 +58,56 @@ class Passeio extends Component {
       }
     );
   };
+
   toInt = ({ target }) => {
-    this.setState({ [target.name]: parseInt(target.value) });
+    this.setState({ [target.name]: parseInt(target.value) }, () => {
+      if (isNaN(Number(target.value))) {
+        this.setState({ [target.name]: 0 });
+      }
+    });
+  };
+
+  validateInputs = () => {
+    const { nomePasseio, valorPasseio, lotacao, idadeIsencao } = this.state;
+    const isAnyInputInvalid =
+      nomePasseio.length === 0 ||
+      valorPasseio < 0 ||
+      idadeIsencao < 0 ||
+      lotacao < 0;
+    return isAnyInputInvalid;
+  };
+
+  sendData = async () => {
+    const {
+      data: { success, message },
+    } = await axios({
+      method: 'POST',
+      url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php`,
+      data: { ...this.state },
+    });
+
+    if (success) {
+      toast.success(message, {
+        pauseOnFocusLoss: false,
+      });
+    } else {
+      toast.error(message, {
+        pauseOnFocusLoss: false,
+      });
+    }
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    const isAnyInputInvalid = this.validateInputs();
+    if (isAnyInputInvalid) {
+      toast.error('Por favor, preencha todos os campos corretamente!', {
+        pauseOnFocusLoss: false,
+      });
+    } else {
+      this.sendData();
+    }
   };
 
   render() {
@@ -65,7 +123,7 @@ class Passeio extends Component {
     } = this.state;
     return (
       <Content cardTitle="Cadastrar Passeio">
-        <form action="">
+        <form action="" onSubmit={this.handleSubmit}>
           <Grid container justifyContent="space-between" p={3}>
             <Grid item xs={12}>
               <TextField
@@ -78,6 +136,7 @@ class Passeio extends Component {
                 onChange={this.handleChange}
                 sx={{ mb: 3 }}
                 required
+                error={false}
               />
               <TextField
                 id="standard-basic"
@@ -158,6 +217,7 @@ class Passeio extends Component {
                 <TextField
                   id="startDate"
                   label="Data do passeio"
+                  name="dataPasseio"
                   type="date"
                   sx={{
                     width: 220,
@@ -165,7 +225,8 @@ class Passeio extends Component {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  onChange={this.handleDateChange}
+                  onChange={this.handleChange}
+                  required
                 />
               </LocalizationProvider>
             </Grid>
@@ -180,14 +241,16 @@ class Passeio extends Component {
                   value={statusPasseio}
                 >
                   <FormControlLabel
-                    value="ativo"
+                    value={1}
                     control={<Radio />}
                     label="Ativo"
+                    onClick={this.handleChange}
                   />
                   <FormControlLabel
-                    value="inativo"
+                    value={0}
                     control={<Radio />}
                     label="Inativo"
+                    onClick={this.handleChange}
                   />
                 </RadioGroup>
               </FormControl>
@@ -197,6 +260,7 @@ class Passeio extends Component {
                 <TextField
                   id="startDate"
                   label="Data de lançamento"
+                  name="dataLancamento"
                   type="date"
                   sx={{
                     width: 220,
@@ -204,7 +268,8 @@ class Passeio extends Component {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  onChange={this.handleDateChange}
+                  onChange={this.handleChange}
+                  required
                 />
               </LocalizationProvider>
             </Grid>
@@ -213,6 +278,7 @@ class Passeio extends Component {
                 <TextField
                   id="startDate"
                   label="Prazo de vingência"
+                  name="prazoVigencia"
                   type="date"
                   sx={{
                     width: 220,
@@ -220,19 +286,22 @@ class Passeio extends Component {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  onChange={this.handleDateChange}
+                  onChange={this.handleChange}
+                  required
                 />
               </LocalizationProvider>
             </Grid>
           </Grid>
           <Button
+            type="submit"
             sx={{ marginLeft: 3 }}
             variant="contained"
-            onClick={this.handleButtonClick}
+            // onClick={this.handleSubmit}
           >
             Enviar
           </Button>
         </form>
+        <ToastContainer pauseOnFocusLoss />
       </Content>
     );
   }
