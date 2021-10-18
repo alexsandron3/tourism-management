@@ -150,9 +150,9 @@ class Cliente extends Component {
       console.error(error);
     }
   };
-  handleChange = ({ target }) => {
-    this.setState({ pesquisarCliente: target.value });
-  };
+  // handleChange = ({ target }) => {
+  //   this.setState({ pesquisarCliente: target.value });
+  // };
   handleClick = (target) => {
     console.log(target.currentTarget);
   };

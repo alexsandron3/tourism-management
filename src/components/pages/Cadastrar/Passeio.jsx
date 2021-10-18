@@ -11,13 +11,58 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import { Button } from '@mui/material';
 
 class Passeio extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      nomePasseio: '',
+      localPasseio: '',
+      valorPasseio: '',
+      lotacao: '',
+      idadeIsencao: '',
+      anotacoes: '',
+      itensPacote: '',
+      statusPasseio: '',
+    };
   }
+  handleChange = ({ target }) => {
+    this.setState({ [target.name]: target.value });
+  };
+  handleNumbers = ({ target }) => {
+    if (/^[0-9.]*$/.test(target.value)) {
+      this.setState({ [target.name]: target.value });
+    }
+  };
+
+  toFloat = ({ target }) => {
+    this.setState(
+      {
+        [target.name]: Number(target.value).toFixed(2),
+      },
+      () => {
+        if (isNaN(Number(target.value))) {
+          this.setState({ [target.name]: 0 });
+        }
+      }
+    );
+  };
+  toInt = ({ target }) => {
+    this.setState({ [target.name]: parseInt(target.value) });
+  };
+
   render() {
+    const {
+      nomePasseio,
+      localPasseio,
+      valorPasseio,
+      lotacao,
+      idadeIsencao,
+      anotacoes,
+      itensPacote,
+      statusPasseio,
+    } = this.state;
     return (
       <Content cardTitle="Cadastrar Passeio">
         <form action="">
@@ -28,13 +73,20 @@ class Passeio extends Component {
                 label="Passeio: "
                 variant="standard"
                 fullWidth
+                name="nomePasseio"
+                value={nomePasseio}
+                onChange={this.handleChange}
                 sx={{ mb: 3 }}
+                required
               />
               <TextField
                 id="standard-basic"
                 label="Local: "
                 variant="standard"
                 fullWidth
+                name="localPasseio"
+                value={localPasseio}
+                onChange={this.handleChange}
                 sx={{ mb: 3 }}
               />
             </Grid>
@@ -43,7 +95,12 @@ class Passeio extends Component {
                 id="standard-basic"
                 label="Valor do passeio: "
                 variant="standard"
+                name="valorPasseio"
+                value={valorPasseio}
+                onChange={this.handleNumbers}
+                onBlur={this.toFloat}
                 sx={{ mb: 3 }}
+                required
               />
             </Grid>
             <Grid item xs={4}>
@@ -51,7 +108,12 @@ class Passeio extends Component {
                 id="standard-basic"
                 label="Lotação: "
                 variant="standard"
+                name="lotacao"
+                value={lotacao}
+                onChange={this.handleNumbers}
+                onBlur={this.toInt}
                 sx={{ mb: 3 }}
+                required
               />
             </Grid>
             <Grid item xs={4}>
@@ -59,7 +121,12 @@ class Passeio extends Component {
                 id="standard-basic"
                 label="Isenção: "
                 variant="standard"
+                name="idadeIsencao"
+                value={idadeIsencao}
+                onChange={this.handleNumbers}
+                onBlur={this.toInt}
                 sx={{ mb: 3 }}
+                required
               />
             </Grid>
             <Grid item xs={12}>
@@ -69,6 +136,9 @@ class Passeio extends Component {
                 multiline
                 fullWidth
                 variant="standard"
+                name="anotacoes"
+                value={anotacoes}
+                onChange={this.handleChange}
                 sx={{ mb: 3 }}
               />
               <TextField
@@ -77,6 +147,9 @@ class Passeio extends Component {
                 multiline
                 fullWidth
                 variant="standard"
+                name="itensPacote"
+                value={itensPacote}
+                onChange={this.handleChange}
                 sx={{ mb: 3 }}
               />
             </Grid>
@@ -88,7 +161,6 @@ class Passeio extends Component {
                   type="date"
                   sx={{
                     width: 220,
-                    // marginBottom: '20px',
                   }}
                   InputLabelProps={{
                     shrink: true,
@@ -105,6 +177,7 @@ class Passeio extends Component {
                   aria-label="statusPasseio"
                   defaultValue="ativo"
                   name="statusPasseio"
+                  value={statusPasseio}
                 >
                   <FormControlLabel
                     value="ativo"
@@ -152,6 +225,13 @@ class Passeio extends Component {
               </LocalizationProvider>
             </Grid>
           </Grid>
+          <Button
+            sx={{ marginLeft: 3 }}
+            variant="contained"
+            onClick={this.handleButtonClick}
+          >
+            Enviar
+          </Button>
         </form>
       </Content>
     );
