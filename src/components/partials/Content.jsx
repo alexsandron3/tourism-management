@@ -4,7 +4,7 @@ export default class Content extends Component {
   render() {
     return (
       <Grid container justifyContent="center">
-        <Grid item xs={12} md={10} lg={10} p={3}>
+        <Grid item xs={12} md={10} lg={10} mt={12} mb={6}>
           <Card elevation={24} p={6}>
             <CardContent>
               <Typography
