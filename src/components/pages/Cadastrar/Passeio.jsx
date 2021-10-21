@@ -5,19 +5,20 @@ import TextField from '@mui/material/TextField';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DatePicker from '@mui/lab/DatePicker';
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import { Button } from '@mui/material';
+import { Backdrop, Button, CircularProgress } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { parseISO } from 'date-fns';
 
 import axios from 'axios';
 import moment from 'moment';
-
 class Passeio extends Component {
   constructor(props) {
     super(props);
@@ -33,11 +34,14 @@ class Passeio extends Component {
       statusPasseio: 1,
       dataLancamento: '',
       prazoVigencia: '',
+      isLoading: true,
     };
   }
-
+  componentDidMount() {
+    this.fetchPasseio();
+  }
   handleChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
+    this.setState({ [target.name]: target.value.toUpperCase() });
   };
 
   handleNumbers = ({ target }) => {
@@ -78,14 +82,20 @@ class Passeio extends Component {
   };
 
   sendData = async () => {
+    const { id } = this.props.match.params;
+    const method = id ? 'UPDATE' : 'POST';
+    const state = [];
+    state.push(this.state);
+    const filteredState = state.map(({ isLoading, ...rest }) => rest);
     const {
       data: { success, message },
+      data,
     } = await axios({
-      method: 'POST',
+      method: method,
       url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php`,
-      data: { ...this.state },
+      data: { ...filteredState[0] },
     });
-
+    console.log(data);
     if (success) {
       toast.success(message, {
         pauseOnFocusLoss: false,
@@ -110,6 +120,20 @@ class Passeio extends Component {
     }
   };
 
+  fetchPasseio = async () => {
+    const { id } = this.props.match.params;
+    if (id) {
+      const {
+        data: { passeio },
+      } = await axios.get(
+        `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php?id=${id}`
+      );
+      this.setState({ ...passeio[0], isLoading: false });
+    } else {
+      this.setState({ isLoading: false });
+    }
+  };
+
   render() {
     const {
       nomePasseio,
@@ -120,12 +144,20 @@ class Passeio extends Component {
       anotacoes,
       itensPacote,
       statusPasseio,
+      isLoading,
     } = this.state;
+    const { id } = this.props.match.params;
     return (
-      <Content cardTitle="Cadastrar Passeio">
+      <Content cardTitle={id ? 'Editar Passeio' : 'Cadastrar Passeio'}>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <form action="" onSubmit={this.handleSubmit}>
           <Grid container justifyContent="space-between" p={3}>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={12}>
               <TextField
                 id="standard-basic"
                 label="Passeio: "
@@ -149,7 +181,7 @@ class Passeio extends Component {
                 sx={{ mb: 3 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <TextField
                 id="standard-basic"
                 label="Valor do passeio: "
@@ -159,10 +191,11 @@ class Passeio extends Component {
                 onChange={this.handleNumbers}
                 onBlur={this.toFloat}
                 sx={{ mb: 3 }}
+                fullWidth
                 required
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <TextField
                 id="standard-basic"
                 label="Lotação: "
@@ -172,10 +205,11 @@ class Passeio extends Component {
                 onChange={this.handleNumbers}
                 onBlur={this.toInt}
                 sx={{ mb: 3 }}
+                fullWidth
                 required
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <TextField
                 id="standard-basic"
                 label="Isenção: "
@@ -185,10 +219,11 @@ class Passeio extends Component {
                 onChange={this.handleNumbers}
                 onBlur={this.toInt}
                 sx={{ mb: 3 }}
+                fullWidth
                 required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={12}>
               <TextField
                 id="standard-basic"
                 label="Anotações: "
@@ -212,26 +247,23 @@ class Passeio extends Component {
                 sx={{ mb: 3 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4} marginBottom={3}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <TextField
-                  id="startDate"
+                <DatePicker
                   label="Data do passeio"
-                  name="dataPasseio"
-                  type="date"
-                  sx={{
-                    width: 220,
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  onChange={this.handleChange}
-                  required
+                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(val) =>
+                    this.setState({
+                      dataPasseio: moment(val).format('YYYY-MM-DD'),
+                    })
+                  }
+                  value={parseISO(this.state.dataPasseio)}
+                  // formatDate={(date) => moment(date).format('YYYY-MM-DD')}
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={4}></Grid>
-            <Grid item xs={4} marginBottom={3}>
+            <Grid item xs={12} md={4}></Grid>
+            <Grid item xs={12} md={4} marginBottom={3}>
               <FormControl component="fieldset">
                 <FormLabel component="legend">Status do passeio: </FormLabel>
                 <RadioGroup
@@ -255,49 +287,37 @@ class Passeio extends Component {
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4} marginBottom={3}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <TextField
-                  id="startDate"
+                <DatePicker
                   label="Data de lançamento"
-                  name="dataLancamento"
-                  type="date"
-                  sx={{
-                    width: 220,
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  onChange={this.handleChange}
-                  required
+                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(val) =>
+                    this.setState({
+                      dataLancamento: moment(val).format('YYYY-MM-DD'),
+                    })
+                  }
+                  value={parseISO(this.state.dataLancamento)}
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <TextField
-                  id="startDate"
+                <DatePicker
                   label="Prazo de vingência"
-                  name="prazoVigencia"
-                  type="date"
-                  sx={{
-                    width: 220,
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  onChange={this.handleChange}
+                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(val) =>
+                    this.setState({
+                      prazoVigencia: moment(val).format('YYYY-MM-DD'),
+                    })
+                  }
+                  value={parseISO(this.state.prazoVigencia)}
                   required
                 />
               </LocalizationProvider>
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            sx={{ marginLeft: 3 }}
-            variant="contained"
-            // onClick={this.handleSubmit}
-          >
+          <Button type="submit" sx={{ marginLeft: 3 }} variant="contained">
             Enviar
           </Button>
         </form>

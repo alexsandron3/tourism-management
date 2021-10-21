@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import TableComponent from '../../partials/TableComponent';
 import axios from 'axios';
-import { Button, IconButton } from '@mui/material';
+import { Button, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -62,6 +62,77 @@ class Passeio extends Component {
     const { pesquisarPasseio, row, isLoading } = this.state;
     const columns = [
       {
+        field: 'actions',
+        headerName: 'Ações',
+        minWidth: 180,
+        flex: 1,
+        renderCell: ({ id }) => (
+          <strong>
+            <Link to={`/cadastrar/passeio/${id}`} target="_blank">
+              <Tooltip title="Editar">
+                <IconButton
+                  id="menu-options"
+                  aria-controls="menu-options"
+                  aria-haspopup="true"
+                  aria-expanded={this.state.open ? 'true' : undefined}
+                  onClick={() => console.log(id)}
+                  color="secondary"
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Tooltip title="Relatórios">
+              <IconButton
+                id="menu-options"
+                aria-controls="menu-options"
+                aria-haspopup="true"
+                aria-expanded={this.state.open ? 'true' : undefined}
+                onClick={this.handleClick}
+              >
+                <DescriptionIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Lista de clientes">
+              <IconButton
+                id="menu-options"
+                aria-controls="menu-options"
+                aria-haspopup="true"
+                aria-expanded={this.state.open ? 'true' : undefined}
+                onClick={this.handleClick}
+                color="primary"
+              >
+                <GroupsIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Lucros">
+              <IconButton
+                id="menu-options"
+                aria-controls="menu-options"
+                aria-haspopup="true"
+                aria-expanded={this.state.open ? 'true' : undefined}
+                onClick={this.handleClick}
+                color="success"
+              >
+                <PriceCheckIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Remover">
+              <IconButton
+                id="menu-options"
+                aria-controls="menu-options"
+                aria-haspopup="true"
+                aria-expanded={this.state.open ? 'true' : undefined}
+                onClick={this.handleClick}
+                sx={{ color: 'red' }}
+              >
+                <DeleteForeverIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </strong>
+        ),
+      },
+      {
         field: 'idPasseio',
         headerName: 'ID',
         type: 'number',
@@ -70,67 +141,6 @@ class Passeio extends Component {
         headerAlign: 'center',
         align: 'center',
         hide: true,
-      },
-      {
-        field: 'actions',
-        headerName: 'Ações',
-        minWidth: 180,
-        flex: 1,
-        renderCell: ({ id }) => (
-          <strong>
-            <Link to={`/Passeio/${id}`} target="_blank">
-              <IconButton
-                id="menu-options"
-                aria-controls="menu-options"
-                aria-haspopup="true"
-                aria-expanded={this.state.open ? 'true' : undefined}
-                onClick={() => console.log(id)}
-                color="secondary"
-              >
-                <EditIcon fontSize="small" />
-              </IconButton>
-            </Link>
-            <IconButton
-              id="menu-options"
-              aria-controls="menu-options"
-              aria-haspopup="true"
-              aria-expanded={this.state.open ? 'true' : undefined}
-              onClick={this.handleClick}
-            >
-              <DescriptionIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              id="menu-options"
-              aria-controls="menu-options"
-              aria-haspopup="true"
-              aria-expanded={this.state.open ? 'true' : undefined}
-              onClick={this.handleClick}
-              color="success"
-            >
-              <GroupsIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              id="menu-options"
-              aria-controls="menu-options"
-              aria-haspopup="true"
-              aria-expanded={this.state.open ? 'true' : undefined}
-              onClick={this.handleClick}
-              color="primary"
-            >
-              <PriceCheckIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              id="menu-options"
-              aria-controls="menu-options"
-              aria-haspopup="true"
-              aria-expanded={this.state.open ? 'true' : undefined}
-              onClick={this.handleClick}
-              sx={{ color: 'red' }}
-            >
-              <DeleteForeverIcon fontSize="small" />
-            </IconButton>
-          </strong>
-        ),
       },
       {
         field: 'nomePasseio',
