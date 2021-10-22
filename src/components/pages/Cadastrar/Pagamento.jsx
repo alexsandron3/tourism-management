@@ -1,7 +1,8 @@
 import { Step, Stepper, StepLabel, Button } from '@mui/material';
 import React, { Component } from 'react';
 import Content from '../../partials/Content';
-import SelecionarPagamento from '../../partials/SelecionarPasseio';
+import SelecionarPasseio from '../../partials/SelecionarPasseio';
+import FormPagamento from '../../partials/FormPagamento';
 import axios from 'axios';
 class Pagamento extends Component {
   constructor(props) {
@@ -55,11 +56,12 @@ class Pagamento extends Component {
       {
         label: 'Selecionar Passeio',
         title: 'Selecione um passeio para Pagamento',
-        content: <SelecionarPagamento {...this.state} />,
+        content: <SelecionarPasseio {...this.state} />,
       },
       {
         label: 'Realizar Pagamento',
         title: 'Pagamento',
+        content: <FormPagamento {...this.state} />,
       },
       {
         label: 'Emitir Contrato',

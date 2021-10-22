@@ -1,8 +1,7 @@
 import { Grid, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { nanoid } from 'nanoid';
 import React, { Component } from 'react';
-import Passeio from '../pages/Cadastrar/Passeio';
-class SelecionarPagamento extends Component {
+class SelecionarPasseio extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -43,4 +42,4 @@ class SelecionarPagamento extends Component {
   }
 }
 
-export default SelecionarPagamento;
+export default SelecionarPasseio;
