@@ -30,6 +30,7 @@ import { parseISO } from 'date-fns';
 
 import axios from 'axios';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 class Cliente extends Component {
   constructor(props) {
@@ -189,7 +190,6 @@ class Cliente extends Component {
         `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php?id=${id}`
       );
       this.setState({ ...cliente[0], isLoading: false });
-      // console.log(data);
     } else {
       this.setState({ isLoading: false });
     }
@@ -541,6 +541,11 @@ class Cliente extends Component {
           <Button type="submit" sx={{ marginLeft: 3 }} variant="contained">
             Enviar
           </Button>
+          <Link to="/cadastrar/pagamento" target="_blank">
+            <Button sx={{ marginLeft: 3 }} variant="contained">
+              Próximo
+            </Button>
+          </Link>
         </form>
         <ToastContainer pauseOnFocusLoss />
       </Content>
