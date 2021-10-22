@@ -130,7 +130,7 @@ class Cliente extends Component {
     const { pesquisarCliente } = this.state;
     this.setState({ isLoading: true });
     const {
-      data: { usuario = [], success, message },
+      data: { cliente = [], success, message },
     } = await axios({
       method: 'GET',
       url: `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php?pesquisarCliente=${pesquisarCliente}`,
@@ -145,14 +145,14 @@ class Cliente extends Component {
       });
     }
     try {
-      this.setState({ row: usuario, isLoading: false });
+      this.setState({ row: cliente, isLoading: false });
     } catch (error) {
       console.error(error);
     }
   };
-  // handleChange = ({ target }) => {
-  //   this.setState({ pesquisarCliente: target.value });
-  // };
+  handleChange = ({ target }) => {
+    this.setState({ pesquisarCliente: target.value });
+  };
   handleClick = (target) => {
     console.log(target.currentTarget);
   };

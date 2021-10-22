@@ -26,29 +26,30 @@ import { parseISO } from 'date-fns';
 
 import axios from 'axios';
 import moment from 'moment';
-class Passeio extends Component {
+
+class Cliente extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nomeCliente: 'asd',
+      nomeCliente: '',
       emailCliente: '',
       rgCliente: '',
       orgaoEmissor: '',
       cpfCliente: '',
       telefoneCliente: '',
-      dataNascimento: '',
-      idadeCliente: '',
+      dataNascimento: null,
+      idadeCliente: 0,
       referencia: '',
       pessoaContato: '',
       telefoneContato: '',
-      cpfConsultado: '',
-      dataCpfConsultado: '',
+      cpfConsultado: 0,
+      dataCpfConsultado: null,
       redeSocial: '',
       enderecoCliente: '',
       nacionalidade: '',
       profissao: '',
       estadoCivil: '',
-      clienteRedeSocial: false,
+      clienteRedeSocial: 0,
       poltrona: '',
       isLoading: false,
     };
@@ -56,8 +57,45 @@ class Passeio extends Component {
   componentDidMount() {
     this.fetchPasseio();
   }
+
   handleChange = ({ target }) => {
-    this.setState({ [target.name]: target.value.toUpperCase() });
+    let value;
+    switch (target.name) {
+      case 'cpfCliente':
+        value = this.cpfMask(target.value);
+        break;
+      case 'telefoneCliente':
+        value = this.telefoneMask(target);
+        break;
+      case 'telefoneContato':
+        value = this.telefoneMask(target);
+        break;
+
+      default:
+        value = target.value.toUpperCase();
+        break;
+    }
+    this.setState({ [target.name]: value });
+  };
+
+  cpfMask = (value) => {
+    const { cpfCliente } = this.state;
+    let maskedValue = value;
+    maskedValue = value.replace(/[^\d]/g, '');
+    maskedValue = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    console.log(maskedValue.length < 14);
+    if (maskedValue.length > 14) return cpfCliente;
+    return maskedValue;
+  };
+
+  telefoneMask = (target) => {
+    if (target.value.length > 11) return this.state[target.name];
+    return target.value;
+  };
+
+  calculateAge = (date) => {
+    const idadeCliente = moment().diff(moment(date), 'years');
+    this.setState({ idadeCliente });
   };
 
   handleNumbers = ({ target }) => {
@@ -102,16 +140,16 @@ class Passeio extends Component {
     const method = id ? 'UPDATE' : 'POST';
     const state = [];
     state.push(this.state);
-    const filteredState = state.map(({ isLoading, ...rest }) => rest);
+    const filteredState = state.map(({ isLoading, modified, created, ...rest }) => rest);
     const {
       data: { success, message },
       data,
     } = await axios({
       method: method,
-      url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php`,
+      url: `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php`,
       data: { ...filteredState[0] },
     });
-    console.log(data);
+    console.log(data, Object.keys(data));
     if (success) {
       toast.success(message, {
         pauseOnFocusLoss: false,
@@ -140,11 +178,13 @@ class Passeio extends Component {
     const { id } = this.props.match.params;
     if (id) {
       const {
-        data: { passeio },
+        data: { cliente },
+        
       } = await axios.get(
-        `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php?id=${id}`
+        `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php?id=${id}`
       );
-      this.setState({ ...passeio[0], isLoading: false });
+      this.setState({ ...cliente[0], isLoading: false });
+      // console.log(data);
     } else {
       this.setState({ isLoading: false });
     }
@@ -199,6 +239,7 @@ class Passeio extends Component {
                 error={false}
               />
               <TextField
+                type="email"
                 id="standard-basic"
                 label="EmailCliente: "
                 variant="standard"
@@ -213,7 +254,7 @@ class Passeio extends Component {
                 label="Rg: "
                 variant="standard"
                 fullWidth
-                name="rg"
+                name="rgCliente"
                 value={rgCliente}
                 onChange={this.handleChange}
                 sx={{ mb: 3 }}
@@ -223,14 +264,16 @@ class Passeio extends Component {
                 label="Emissor: "
                 variant="standard"
                 fullWidth
-                name="emissor"
+                name="orgaoEmissor"
                 value={orgaoEmissor}
                 onChange={this.handleChange}
                 sx={{ mb: 3 }}
               />
+
               <TextField
+                type="text"
                 id="standard-basic"
-                label="Cpf: "
+                label="CPF : "
                 variant="standard"
                 fullWidth
                 name="cpfCliente"
@@ -254,11 +297,12 @@ class Passeio extends Component {
                 <DatePicker
                   label="Nascimento"
                   renderInput={(params) => <TextField {...params} />}
-                  onChange={(val) =>
+                  onChange={(val) => {
                     this.setState({
                       dataNascimento: moment(val).format('YYYY-MM-DD'),
-                    })
-                  }
+                    });
+                    this.calculateAge(val);
+                  }}
                   value={parseISO(dataNascimento)}
                   // formatDate={(date) => moment(date).format('YYYY-MM-DD')}
                 />
@@ -271,12 +315,12 @@ class Passeio extends Component {
                 label="Idade: "
                 variant="standard"
                 name="idadeCliente"
-                value={idadeCliente}
+                value={idadeCliente || 0}
                 onChange={this.handleNumbers}
                 onBlur={this.toInt}
                 sx={{ mb: 3 }}
                 fullWidth
-                disabled="true"
+                disabled={true}
               />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -286,13 +330,14 @@ class Passeio extends Component {
                   labelId="estado-civil"
                   value={estadoCivil}
                   label="Estado Civil"
-                  // onChange={this.handleChange}
+                  name="estadoCivil"
+                  onChange={this.handleChange}
                 >
-                  <MenuItem>Solteiro(a)</MenuItem>
-                  <MenuItem>Casado(a)</MenuItem>
-                  <MenuItem>Divorciado(a)</MenuItem>
-                  <MenuItem>Viúvo(a)</MenuItem>
-                  <MenuItem>Separado(a)</MenuItem>
+                  <MenuItem value="SOLTEIRO(A)">Solteiro(a)</MenuItem>
+                  <MenuItem value="CASADO(A)">Casado(a)</MenuItem>
+                  <MenuItem value="DIVORCIADO(A)">Divorciado(a)</MenuItem>
+                  <MenuItem value="VIÚVO(A)">Viúvo(a)</MenuItem>
+                  <MenuItem value="SEPARADO(A)">Separado(a)</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -304,7 +349,7 @@ class Passeio extends Component {
                 variant="standard"
                 name="profissao"
                 value={profissao}
-                onChange={this.handleNumbers}
+                onChange={this.handleChange}
                 onBlur={this.toInt}
                 sx={{ mb: 3 }}
                 fullWidth
@@ -317,8 +362,7 @@ class Passeio extends Component {
                 variant="standard"
                 name="nacionalidade"
                 value={nacionalidade}
-                onChange={this.handleNumbers}
-                onBlur={this.toInt}
+                onChange={this.handleChange}
                 sx={{ mb: 3 }}
                 fullWidth
               />
@@ -331,8 +375,7 @@ class Passeio extends Component {
                 variant="standard"
                 name="poltrona"
                 value={poltrona}
-                onChange={this.handleNumbers}
-                onBlur={this.toInt}
+                onChange={this.handleChange}
                 sx={{ mb: 3 }}
                 fullWidth
               />
@@ -341,22 +384,30 @@ class Passeio extends Component {
               <FormControl component="fieldset">
                 <FormLabel component="legend">Cpf consultado: </FormLabel>
                 <RadioGroup
-                  aria-label="statusPasseio"
+                  aria-label="cpfConsultado"
                   defaultValue="ativo"
-                  name="statusPasseio"
+                  name="cpfConsultado"
                   value={cpfConsultado}
                 >
                   <FormControlLabel
                     value={1}
                     control={<Radio />}
                     label="Sim"
-                    onClick={this.handleChange}
+                    onClick={(e) => {
+                      this.handleChange(e);
+                      this.setState({
+                        dataCpfConsultado: moment().format('YYYY-MM-DD'),
+                      });
+                    }}
                   />
                   <FormControlLabel
                     value={0}
                     control={<Radio />}
                     label="Não"
-                    onClick={this.handleChange}
+                    onClick={(e) => {
+                      this.handleChange(e);
+                      this.setState({ dataCpfConsultado: null });
+                    }}
                   />
                 </RadioGroup>
               </FormControl>
@@ -372,7 +423,7 @@ class Passeio extends Component {
                       dataCpfConsultado: moment(val).format('YYYY-MM-DD'),
                     })
                   }
-                  value={parseISO(dataCpfConsultado)}
+                  value={parseISO(dataCpfConsultado) || null}
                   // formatDate={(date) => moment(date).format('YYYY-MM-DD')}
                 />
               </LocalizationProvider>
@@ -411,8 +462,7 @@ class Passeio extends Component {
                 variant="standard"
                 name="telefoneContato"
                 value={telefoneContato}
-                onChange={this.handleNumbers}
-                onBlur={this.toInt}
+                onChange={this.handleChange}
                 sx={{ mb: 3 }}
                 fullWidth
               />
@@ -425,8 +475,7 @@ class Passeio extends Component {
                 variant="standard"
                 name="pessoaContato"
                 value={pessoaContato}
-                onChange={this.handleNumbers}
-                onBlur={this.toInt}
+                onChange={this.handleChange}
                 sx={{ mb: 3 }}
                 fullWidth
               />
@@ -447,13 +496,13 @@ class Passeio extends Component {
             <Grid item xs={12} md={4}></Grid>
 
             <Grid item xs={12} md={4} marginBottom={3}>
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" required>
                 <FormLabel component="legend">Redes sociais: </FormLabel>
                 <RadioGroup
-                  aria-label="redeSocial"
+                  aria-label="clienteRedeSocial"
                   defaultValue="ativo"
-                  name="redeSocial"
-                  value={redeSocial}
+                  name="clienteRedeSocial"
+                  value={clienteRedeSocial}
                 >
                   <FormControlLabel
                     value={1}
@@ -466,39 +515,11 @@ class Passeio extends Component {
                     control={<Radio />}
                     label="Não"
                     onClick={this.handleChange}
+                    defaultChecked="true"
                   />
                 </RadioGroup>
               </FormControl>
             </Grid>
-            {/* <Grid item xs={12} md={4} marginBottom={3}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label="Data de lançamento"
-                  renderInput={(params) => <TextField {...params} />}
-                  onChange={(val) =>
-                    this.setState({
-                      dataLancamento: moment(val).format('YYYY-MM-DD'),
-                    })
-                  }
-                  value={parseISO(this.state.dataLancamento)}
-                />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label="Prazo de vingência"
-                  renderInput={(params) => <TextField {...params} />}
-                  onChange={(val) =>
-                    this.setState({
-                      prazoVigencia: moment(val).format('YYYY-MM-DD'),
-                    })
-                  }
-                  value={parseISO(this.state.prazoVigencia)}
-                  required
-                />
-              </LocalizationProvider>
-            </Grid> */}
           </Grid>
           <Button type="submit" sx={{ marginLeft: 3 }} variant="contained">
             Enviar
@@ -510,4 +531,4 @@ class Passeio extends Component {
   }
 }
 
-export default Passeio;
+export default Cliente;
