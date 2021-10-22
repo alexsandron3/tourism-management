@@ -19,6 +19,10 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  IconButton,
+  Step,
+  Stepper,
+  StepLabel,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -140,7 +144,9 @@ class Cliente extends Component {
     const method = id ? 'UPDATE' : 'POST';
     const state = [];
     state.push(this.state);
-    const filteredState = state.map(({ isLoading, modified, created, ...rest }) => rest);
+    const filteredState = state.map(
+      ({ isLoading, modified, created, ...rest }) => rest
+    );
     const {
       data: { success, message },
       data,
@@ -179,7 +185,6 @@ class Cliente extends Component {
     if (id) {
       const {
         data: { cliente },
-        
       } = await axios.get(
         `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php?id=${id}`
       );
@@ -215,8 +220,20 @@ class Cliente extends Component {
       isLoading,
     } = this.state;
     const { id } = this.props.match.params;
+    const steps = [
+      'Registrar Cliente',
+      'Realizar Pagamento',
+      'Emitir Contrato',
+    ];
     return (
       <Content cardTitle={id ? 'Editar Cliente' : 'Cadastrar Cliente'}>
+        <Stepper activeStep={0} alternativeLabel>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={isLoading}
