@@ -13,13 +13,37 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
 import moment from 'moment';
 import { parseISO } from 'date-fns';
-
+import BigNumber from 'bignumber.js';
 class FormPagamento extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
   render() {
+    const {
+      handleChange,
+      handleNumbers,
+      toFloat,
+      toInt,
+      pagamento: {
+        valorVendido,
+        valorPago,
+        novoValorPago,
+        valorPendente,
+        taxaPagamento,
+        previsaoPagamento,
+        valorContrato,
+        numeroVagas,
+        localEmbarque,
+        transporte,
+        opcionais,
+        anotacoes,
+        clienteParceiro,
+        seguroViagem,
+        historico,
+      },
+      handleDateChange,
+    } = this.props;
     return (
       <form action="" onSubmit={this.handleSubmit}>
         <Grid container justifyContent="space-between" p={3}>
@@ -29,9 +53,10 @@ class FormPagamento extends Component {
               label="Valor vendido: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="valorVendido"
+              value={valorVendido || '0'}
+              onChange={handleNumbers}
+              onBlur={toFloat}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -43,9 +68,10 @@ class FormPagamento extends Component {
               label="Valor pago: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="valorPago"
+              value={valorPago || '0'}
+              onChange={handleNumbers}
+              onBlur={toFloat}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -57,9 +83,10 @@ class FormPagamento extends Component {
               label="Novo valor pago: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="novoValorPago"
+              value={novoValorPago || '0'}
+              onChange={handleNumbers}
+              onBlur={toFloat}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -71,9 +98,10 @@ class FormPagamento extends Component {
               label="Valor pendente: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="valorPendente"
+              value={valorPendente || '0'}
+              onChange={handleNumbers}
+              onBlur={toFloat}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -85,9 +113,10 @@ class FormPagamento extends Component {
               label="Taxa de pagamento: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="taxaPagamento"
+              value={taxaPagamento || '0'}
+              onChange={handleNumbers}
+              onBlur={toFloat}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -98,13 +127,9 @@ class FormPagamento extends Component {
               <DatePicker
                 label="Previsão de pagamento: "
                 renderInput={(params) => <TextField {...params} />}
-                onChange={(val) => {
-                  this.setState({
-                    dataNascimento: moment(val).format('YYYY-MM-DD'),
-                  });
-                  this.calculateAge(val);
-                }}
-                // value={parseISO(dataNascimento)}
+                onChange={(e) => handleDateChange(e)}
+                value={parseISO(previsaoPagamento)}
+                name="previsaoPagamento"
                 // formatDate={(date) => moment(date).format('YYYY-MM-DD')}
               />
             </LocalizationProvider>
@@ -116,9 +141,10 @@ class FormPagamento extends Component {
               label="Valor contrato: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="valorContrato"
+              value={valorContrato || '0'}
+              onChange={handleChange}
+              onBlur={toFloat}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -130,9 +156,10 @@ class FormPagamento extends Component {
               label="Número de vagas: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="numeroVagas"
+              value={numeroVagas}
+              onChange={handleNumbers}
+              onBlur={toInt}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -147,9 +174,9 @@ class FormPagamento extends Component {
               fullWidth
               name="nomeCliente"
               // value={nomeCliente}
-              onChange={this.handleChange}
+              // onChange={this.handleChange}
               sx={{ mb: 3 }}
-              required
+              disabled
               error={false}
             />
           </Grid>
@@ -159,9 +186,9 @@ class FormPagamento extends Component {
               label="Local de embarque: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="localEmbarque"
+              value={localEmbarque}
+              onChange={handleChange}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -174,8 +201,8 @@ class FormPagamento extends Component {
               variant="standard"
               fullWidth
               name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              value={localEmbarque}
+              onChange={handleChange}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -188,9 +215,9 @@ class FormPagamento extends Component {
               label="Transporte: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              // value={nomeCliente}
-              onChange={this.handleChange}
+              name="transporte"
+              value={transporte}
+              onChange={handleChange}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -200,20 +227,17 @@ class FormPagamento extends Component {
             <FormControl component="fieldset">
               <FormLabel component="legend">Seguro viagem: </FormLabel>
               <RadioGroup
-                aria-label="cpfConsultado"
+                aria-label="seguroViagem"
                 defaultValue="ativo"
-                name="cpfConsultado"
-                // value={cpfConsultado}
+                name="seguroViagem"
+                value={seguroViagem}
               >
                 <FormControlLabel
                   value={1}
                   control={<Radio />}
                   label="Sim"
                   onClick={(e) => {
-                    this.handleChange(e);
-                    this.setState({
-                      dataCpfConsultado: moment().format('YYYY-MM-DD'),
-                    });
+                    handleChange(e);
                   }}
                 />
                 <FormControlLabel
@@ -221,8 +245,7 @@ class FormPagamento extends Component {
                   control={<Radio />}
                   label="Não"
                   onClick={(e) => {
-                    this.handleChange(e);
-                    this.setState({ dataCpfConsultado: null });
+                    handleChange(e);
                   }}
                 />
               </RadioGroup>
@@ -233,20 +256,17 @@ class FormPagamento extends Component {
             <FormControl component="fieldset">
               <FormLabel component="legend">Cliente parceiro: </FormLabel>
               <RadioGroup
-                aria-label="cpfConsultado"
+                aria-label="clienteParceiro"
                 defaultValue="ativo"
-                name="cpfConsultado"
-                // value={cpfConsultado}
+                name="clienteParceiro"
+                value={clienteParceiro}
               >
                 <FormControlLabel
                   value={1}
                   control={<Radio />}
                   label="Sim"
                   onClick={(e) => {
-                    this.handleChange(e);
-                    this.setState({
-                      dataCpfConsultado: moment().format('YYYY-MM-DD'),
-                    });
+                    handleChange(e);
                   }}
                 />
                 <FormControlLabel
@@ -254,8 +274,7 @@ class FormPagamento extends Component {
                   control={<Radio />}
                   label="Não"
                   onClick={(e) => {
-                    this.handleChange(e);
-                    this.setState({ dataCpfConsultado: null });
+                    handleChange(e);
                   }}
                 />
               </RadioGroup>
@@ -268,8 +287,8 @@ class FormPagamento extends Component {
               multiline
               fullWidth
               variant="standard"
-              name="enderecoCliente"
-              // value={enderecoCliente}
+              name="opcionais"
+              value={opcionais}
               onChange={this.handleChange}
               sx={{ mb: 3 }}
             />
@@ -281,9 +300,9 @@ class FormPagamento extends Component {
               multiline
               fullWidth
               variant="standard"
-              name="enderecoCliente"
-              // value={enderecoCliente}
-              onChange={this.handleChange}
+              name="anotacoes"
+              value={anotacoes}
+              onChange={handleChange}
               sx={{ mb: 3 }}
             />
           </Grid>
@@ -294,9 +313,9 @@ class FormPagamento extends Component {
               multiline
               fullWidth
               variant="standard"
-              name="enderecoCliente"
-              // value={enderecoCliente}
-              onChange={this.handleChange}
+              name="historico"
+              value={historico}
+              onChange={handleChange}
               sx={{ mb: 3 }}
             />
           </Grid>
