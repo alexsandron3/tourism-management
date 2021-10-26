@@ -25,6 +25,7 @@ class FormPagamento extends Component {
       handleNumbers,
       toFloat,
       toInt,
+      setHistory,
       pagamento: {
         valorVendido,
         valorPago,
@@ -40,7 +41,7 @@ class FormPagamento extends Component {
         anotacoes,
         clienteParceiro,
         seguroViagem,
-        historico,
+        historicoPagamento,
         referenciaCliente,
       },
       handleDateChange,
@@ -86,7 +87,10 @@ class FormPagamento extends Component {
               name="novoValorPago"
               value={novoValorPago || '0'}
               onChange={handleNumbers}
-              onBlur={toFloat}
+              onBlur={(e) => {
+                toFloat(e);
+                setHistory();
+              }}
               sx={{ mb: 3 }}
               required
               error={false}
@@ -313,8 +317,8 @@ class FormPagamento extends Component {
               multiline
               fullWidth
               variant="standard"
-              name="historico"
-              value={historico || ' '}
+              name="historicoPagamento"
+              value={historicoPagamento || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
             />

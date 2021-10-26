@@ -17,6 +17,7 @@ class Pagamento extends Component {
       handleDateChange: this.handleDateChange,
       toFloat: this.toFloat,
       toInt: this.toInt,
+      setHistory: this.setHistory,
       selectedPasseio: {},
       pagamento: {
         valorVendido: 0,
@@ -34,6 +35,8 @@ class Pagamento extends Component {
         historico: '',
         referenciaCliente: '',
         valorContrato: 0,
+        historicoPagamento: 'salve',
+        defaultHistoricoPagamento: 'salve',
       },
       error: false,
       isButtonDisabled: true,
@@ -184,6 +187,27 @@ class Pagamento extends Component {
       }
     });
   };
+
+  setHistory = () => {
+    const {
+      pagamento: { novoValorPago, defaultHistoricoPagamento },
+    } = this.state;
+
+    this.setState((prevState) => {
+      let historicoPagamento = `${prevState.pagamento.historicoPagamento}
+${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
+      if (novoValorPago === '0' || isNaN(novoValorPago))
+        historicoPagamento = defaultHistoricoPagamento;
+      return {
+        ...prevState,
+        pagamento: {
+          ...prevState.pagamento,
+          historicoPagamento,
+        },
+      };
+    });
+  };
+
   handleDateChange = (date) => {
     this.setState((prevState) => {
       return {
