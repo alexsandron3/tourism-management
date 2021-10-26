@@ -41,7 +41,7 @@ class FormPagamento extends Component {
         clienteParceiro,
         seguroViagem,
         historico,
-        referenciaCliente
+        referenciaCliente,
       },
       handleDateChange,
     } = this.props;

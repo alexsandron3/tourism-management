@@ -35,11 +35,63 @@ class Pagamento extends Component {
         referenciaCliente: '',
         valorContrato: 0,
       },
+      error: false,
+      isButtonDisabled: true,
     };
   }
   componentDidMount() {
     this.fetchPasseios();
   }
+
+  validateForm = () => {
+    const {
+      pagamento: { valorVendido, novoValorPago, valorPago, taxaPagamento },
+    } = this.state;
+
+    // console.log(valorPago);
+    const isValorVendidoHighestNumber =
+      valorVendido >= novoValorPago &&
+      valorVendido >= valorPago &&
+      valorVendido >= taxaPagamento;
+    if (!isValorVendidoHighestNumber) {
+      this.setState({ error: true, isButtonDisabled: true });
+    } else {
+      this.setState({ error: false, isButtonDisabled: false });
+    }
+  };
+
+  calculateForm = () => {
+    const {
+      pagamento: { novoValorPago, taxaPagamento, valorVendido },
+    } = this.state;
+    let valorPago = [novoValorPago, taxaPagamento].reduce((acc, curr) => {
+      let novoValorPago = new BigNumber(acc);
+      let taxaPagamento = new BigNumber(curr);
+      if (isNaN(novoValorPago)) novoValorPago = 0;
+      if (isNaN(taxaPagamento)) taxaPagamento = 0;
+
+      return new BigNumber(
+        Number(novoValorPago.toFixed(2)) + Number(taxaPagamento.toFixed(2))
+      ).toFixed(2);
+    });
+    const valorPendente =
+      Number(new BigNumber(valorPago).toFixed(2)) -
+      Number(new BigNumber(valorVendido).toFixed(2));
+
+    this.setState(
+      (prevState) => {
+        return {
+          ...prevState,
+          pagamento: {
+            ...prevState.pagamento,
+            valorPago: Number(new BigNumber(valorPago).toFixed(2)),
+            valorPendente: Number(new BigNumber(valorPendente).toFixed(2)),
+          },
+        };
+      },
+      () => this.validateForm()
+    );
+  };
 
   fetchPasseios = async () => {
     const {
@@ -81,17 +133,20 @@ class Pagamento extends Component {
 
   handleNumbers = ({ target }) => {
     if (/^[0-9.]*$/.test(target.value)) {
-      console.log(target.value);
-      this.setState((prevState) => {
-        return {
-          ...prevState,
-          pagamento: {
-            ...prevState.pagamento,
-            [target.name]: target.value,
-          },
-        };
-      });
-      // console.log(this.state[state]);
+      this.setState(
+        (prevState) => {
+          return {
+            ...prevState,
+            pagamento: {
+              ...prevState.pagamento,
+              [target.name]: target.value,
+            },
+          };
+        },
+        () => {
+          this.calculateForm(target.value);
+        }
+      );
     }
   };
 
@@ -130,7 +185,6 @@ class Pagamento extends Component {
     });
   };
   handleDateChange = (date) => {
-    // console.log(target);
     this.setState((prevState) => {
       return {
         ...prevState,
@@ -140,12 +194,10 @@ class Pagamento extends Component {
         },
       };
     });
-
-    // this.calculateAge(target.value);
   };
 
   render() {
-    const { activeStep, selectedPasseio } = this.state;
+    const { activeStep, selectedPasseio, error, isButtonDisabled } = this.state;
     const steps = [
       {
         label: 'Registrar Cliente',
@@ -174,11 +226,9 @@ class Pagamento extends Component {
             </Step>
           ))}
         </Stepper>
+        {error && <p>Algo de errado!</p>}
         {steps[activeStep].content}
-        <Button
-          onClick={this.handleNext}
-          disabled={selectedPasseio ? false : true}
-        >
+        <Button onClick={this.handleNext} disabled={isButtonDisabled}>
           Próximo
         </Button>
       </Content>
