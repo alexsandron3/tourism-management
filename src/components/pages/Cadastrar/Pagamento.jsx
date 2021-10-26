@@ -1,4 +1,4 @@
-import { Step, Stepper, StepLabel, Button } from '@mui/material';
+import { Step, Stepper, StepLabel, Button, Alert } from '@mui/material';
 import React, { Component } from 'react';
 import Content from '../../partials/Content';
 import SelecionarPasseio from '../../partials/SelecionarPasseio';
@@ -6,11 +6,12 @@ import FormPagamento from '../../partials/FormPagamento';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
+
 class Pagamento extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 2,
+      activeStep: 1,
       passeio: [],
       handleChange: this.handleChange,
       handleNumbers: this.handleNumbers,
@@ -18,6 +19,7 @@ class Pagamento extends Component {
       toFloat: this.toFloat,
       toInt: this.toInt,
       setHistory: this.setHistory,
+      handlePasseio: this.handlePasseio,
       selectedPasseio: {},
       pagamento: {
         valorVendido: 0,
@@ -208,6 +210,10 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
     });
   };
 
+  handlePasseio = async ({ target }) => {
+    this.setState({ selectedPasseio: target.value }, () => {});
+  };
+
   handleDateChange = (date) => {
     this.setState((prevState) => {
       return {
@@ -250,7 +256,11 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
             </Step>
           ))}
         </Stepper>
-        {error && <p>Algo de errado!</p>}
+        {error && (
+          <Alert severity="error" sx={{ justifyContent: 'center' }}>
+            Por favor, verifique os campos e tente novamente!
+          </Alert>
+        )}
         {steps[activeStep].content}
         <Button onClick={this.handleNext} disabled={isButtonDisabled}>
           Próximo

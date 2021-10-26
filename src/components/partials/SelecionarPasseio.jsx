@@ -7,7 +7,7 @@ class SelecionarPasseio extends Component {
     this.state = {};
   }
   render() {
-    const { passeio, handleChange, selectedPasseio } = this.props;
+    const { passeio, handlePasseio, selectedPasseio } = this.props;
     return (
       <Grid
         container
@@ -23,12 +23,12 @@ class SelecionarPasseio extends Component {
             value={selectedPasseio || ''}
             label="Passeio: "
             name="selectedPasseio"
-            onChange={handleChange}
+            onChange={handlePasseio}
             // onBlur={() => console.log('opa')}
             // sx={{ minWidth: '50%' }}
           >
             {passeio.map((passeio) => {
-              console.log(passeio);
+              // console.log(passeio);
               return (
                 <MenuItem value={passeio} key={nanoid()}>
                   {passeio.nomePasseio}

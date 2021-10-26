@@ -30,7 +30,7 @@ import { parseISO } from 'date-fns';
 
 import axios from 'axios';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 class Cliente extends Component {
   constructor(props) {
@@ -57,10 +57,11 @@ class Cliente extends Component {
       clienteRedeSocial: 0,
       poltrona: '',
       isLoading: false,
+      cliente: '',
     };
   }
   componentDidMount() {
-    this.fetchPasseio();
+    this.fetchCliente();
   }
 
   handleChange = ({ target }) => {
@@ -146,21 +147,22 @@ class Cliente extends Component {
     const state = [];
     state.push(this.state);
     const filteredState = state.map(
-      ({ isLoading, modified, created, ...rest }) => rest
+      ({ isLoading, modified, created, cliente, ...rest }) => rest
     );
     const {
-      data: { success, message },
+      data: { success, message, cliente },
       data,
     } = await axios({
       method: method,
       url: `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php`,
       data: { ...filteredState[0] },
     });
-    console.log(data, Object.keys(data));
+    console.log(data);
     if (success) {
       toast.success(message, {
         pauseOnFocusLoss: false,
       });
+      this.setState({ cliente });
     } else {
       toast.error(message, {
         pauseOnFocusLoss: false,
@@ -181,7 +183,7 @@ class Cliente extends Component {
     }
   };
 
-  fetchPasseio = async () => {
+  fetchCliente = async () => {
     const { id } = this.props.match.params;
     if (id) {
       const {
@@ -218,17 +220,34 @@ class Cliente extends Component {
       clienteRedeSocial,
       poltrona,
       isLoading,
+      cliente,
     } = this.state;
     const { id } = this.props.match.params;
     const steps = [
-      'Registrar Cliente',
-      'Realizar Pagamento',
-      'Emitir Contrato',
+      {
+        label: 'Registrar Cliente',
+      },
+      {
+        label: 'Selecionar Passeio',
+        title: 'Selecione um passeio para Pagamento',
+        // content: <SelecionarPasseio {...this.state} />,
+      },
+      {
+        label: 'Realizar Pagamento',
+        title: 'Pagamento',
+        // content: <FormPagamento {...this.state} />,
+      },
+      {
+        label: 'Emitir Contrato',
+      },
     ];
+
+    if (cliente)
+      return <Redirect push to={`/cadastrar/pagamento/${cliente}`} />;
     return (
       <Content cardTitle={id ? 'Editar Cliente' : 'Cadastrar Cliente'}>
         <Stepper activeStep={0} alternativeLabel>
-          {steps.map((label) => (
+          {steps.map(({ label }) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
             </Step>
@@ -541,11 +560,11 @@ class Cliente extends Component {
           <Button type="submit" sx={{ marginLeft: 3 }} variant="contained">
             Enviar
           </Button>
-          <Link to="/cadastrar/pagamento" target="_blank">
+          {/* <Link to="/cadastrar/pagamento" target="_blank">
             <Button sx={{ marginLeft: 3 }} variant="contained">
               Próximo
             </Button>
-          </Link>
+          </Link> */}
         </form>
         <ToastContainer pauseOnFocusLoss />
       </Content>
