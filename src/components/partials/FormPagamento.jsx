@@ -41,6 +41,7 @@ class FormPagamento extends Component {
         clienteParceiro,
         seguroViagem,
         historico,
+        referenciaCliente
       },
       handleDateChange,
     } = this.props;
@@ -58,7 +59,6 @@ class FormPagamento extends Component {
               onChange={handleNumbers}
               onBlur={toFloat}
               sx={{ mb: 3 }}
-              required
               error={false}
             />
           </Grid>
@@ -73,7 +73,7 @@ class FormPagamento extends Component {
               onChange={handleNumbers}
               onBlur={toFloat}
               sx={{ mb: 3 }}
-              required
+              disabled
               error={false}
             />
           </Grid>
@@ -103,7 +103,7 @@ class FormPagamento extends Component {
               onChange={handleNumbers}
               onBlur={toFloat}
               sx={{ mb: 3 }}
-              required
+              disabled
               error={false}
             />
           </Grid>
@@ -128,7 +128,7 @@ class FormPagamento extends Component {
                 label="Previsão de pagamento: "
                 renderInput={(params) => <TextField {...params} />}
                 onChange={(e) => handleDateChange(e)}
-                value={parseISO(previsaoPagamento)}
+                value={parseISO(previsaoPagamento) || ' '}
                 name="previsaoPagamento"
                 // formatDate={(date) => moment(date).format('YYYY-MM-DD')}
               />
@@ -143,7 +143,7 @@ class FormPagamento extends Component {
               fullWidth
               name="valorContrato"
               value={valorContrato || '0'}
-              onChange={handleChange}
+              onChange={handleNumbers}
               onBlur={toFloat}
               sx={{ mb: 3 }}
               required
@@ -157,7 +157,7 @@ class FormPagamento extends Component {
               variant="standard"
               fullWidth
               name="numeroVagas"
-              value={numeroVagas}
+              value={numeroVagas || '0'}
               onChange={handleNumbers}
               onBlur={toInt}
               sx={{ mb: 3 }}
@@ -172,7 +172,7 @@ class FormPagamento extends Component {
               label="Idade: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
+              name="idadeCliente"
               // value={nomeCliente}
               // onChange={this.handleChange}
               sx={{ mb: 3 }}
@@ -180,18 +180,18 @@ class FormPagamento extends Component {
               error={false}
             />
           </Grid>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12} md={12} marginBottom={3}>
             <TextField
               id="standard-basic"
-              label="Local de embarque: "
-              variant="standard"
+              label="Referencia: "
+              multiline
               fullWidth
-              name="localEmbarque"
-              value={localEmbarque}
+              disabled
+              variant="standard"
+              name="referenciaCliente"
+              value={referenciaCliente || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
-              required
-              error={false}
             />
           </Grid>
           <Grid item xs={12} md={4}>
@@ -200,8 +200,8 @@ class FormPagamento extends Component {
               label="Local de embarque: "
               variant="standard"
               fullWidth
-              name="nomeCliente"
-              value={localEmbarque}
+              name="localEmbarque"
+              value={localEmbarque || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
               required
@@ -216,7 +216,7 @@ class FormPagamento extends Component {
               variant="standard"
               fullWidth
               name="transporte"
-              value={transporte}
+              value={transporte || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
               required
@@ -230,7 +230,7 @@ class FormPagamento extends Component {
                 aria-label="seguroViagem"
                 defaultValue="ativo"
                 name="seguroViagem"
-                value={seguroViagem}
+                value={seguroViagem || '0'}
               >
                 <FormControlLabel
                   value={1}
@@ -259,7 +259,7 @@ class FormPagamento extends Component {
                 aria-label="clienteParceiro"
                 defaultValue="ativo"
                 name="clienteParceiro"
-                value={clienteParceiro}
+                value={clienteParceiro || 0}
               >
                 <FormControlLabel
                   value={1}
@@ -288,8 +288,8 @@ class FormPagamento extends Component {
               fullWidth
               variant="standard"
               name="opcionais"
-              value={opcionais}
-              onChange={this.handleChange}
+              value={opcionais || ' '}
+              onChange={handleChange}
               sx={{ mb: 3 }}
             />
           </Grid>
@@ -301,7 +301,7 @@ class FormPagamento extends Component {
               fullWidth
               variant="standard"
               name="anotacoes"
-              value={anotacoes}
+              value={anotacoes || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
             />
@@ -314,7 +314,7 @@ class FormPagamento extends Component {
               fullWidth
               variant="standard"
               name="historico"
-              value={historico}
+              value={historico || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
             />

@@ -32,6 +32,8 @@ class Pagamento extends Component {
         seguroViagem: 0,
         clienteParceiro: 0,
         historico: '',
+        referenciaCliente: '',
+        valorContrato: 0,
       },
     };
   }
@@ -65,31 +67,56 @@ class Pagamento extends Component {
   };
 
   handleChange = ({ target }) => {
-    console.log(target);
-    this.setState({ [target.name]: target.value });
+    this.setState((prevState) => {
+      const value = target.value.toUpperCase();
+      return {
+        ...prevState,
+        pagamento: {
+          ...prevState.pagamento,
+          [target.name]: value,
+        },
+      };
+    });
   };
 
   handleNumbers = ({ target }) => {
     if (/^[0-9.]*$/.test(target.value)) {
       console.log(target.value);
-      this.setState({ pagamento: { [target.name]: target.value } });
-
+      this.setState((prevState) => {
+        return {
+          ...prevState,
+          pagamento: {
+            ...prevState.pagamento,
+            [target.name]: target.value,
+          },
+        };
+      });
       // console.log(this.state[state]);
     }
   };
 
   toFloat = ({ target }) => {
     this.setState(
-      () => {
+      (prevState) => {
         const value = new BigNumber(target.value);
 
         return {
-          pagamento: { [target.name]: value.toFixed(2) },
+          ...prevState,
+          pagamento: {
+            ...prevState.pagamento,
+            [target.name]: value.toFixed(2),
+          },
         };
       },
-      () => {
+      (prevState) => {
         if (isNaN(Number(target.value))) {
-          this.setState({ [target.name]: 0 });
+          return {
+            ...prevState,
+            pagamento: {
+              ...prevState.pagamento,
+              [target.name]: 0,
+            },
+          };
         }
       }
     );
@@ -104,9 +131,16 @@ class Pagamento extends Component {
   };
   handleDateChange = (date) => {
     // console.log(target);
-    this.setState({
-      pagamento: { previsaoPagamento: moment(date).format('YYYY-MM-DD') },
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        pagamento: {
+          ...prevState.pagamento,
+          previsaoPagamento: moment(date).format('YYYY-MM-DD'),
+        },
+      };
     });
+
     // this.calculateAge(target.value);
   };
 
