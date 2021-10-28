@@ -190,6 +190,7 @@ class Pagamento extends Component {
     });
   };
 
+  
   setHistory = () => {
     const {
       pagamento: { novoValorPago, defaultHistoricoPagamento },
