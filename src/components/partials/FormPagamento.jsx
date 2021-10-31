@@ -43,6 +43,7 @@ class FormPagamento extends Component {
         seguroViagem,
         historicoPagamento,
         referenciaCliente,
+        clienteDesistente,
       },
       handleDateChange,
     } = this.props;
@@ -92,7 +93,6 @@ class FormPagamento extends Component {
                 setHistory();
               }}
               sx={{ mb: 3 }}
-              required
               error={false}
             />
           </Grid>
@@ -122,7 +122,6 @@ class FormPagamento extends Component {
               onChange={handleNumbers}
               onBlur={toFloat}
               sx={{ mb: 3 }}
-              required
               error={false}
             />
           </Grid>
@@ -150,8 +149,8 @@ class FormPagamento extends Component {
               onChange={handleNumbers}
               onBlur={toFloat}
               sx={{ mb: 3 }}
-              required
               error={false}
+              required
             />
           </Grid>
           <Grid item xs={12} md={4}>
@@ -165,8 +164,8 @@ class FormPagamento extends Component {
               onChange={handleNumbers}
               onBlur={toInt}
               sx={{ mb: 3 }}
-              required
               error={false}
+              required
             />
           </Grid>
           <Grid item xs={12} md={4}></Grid>
@@ -208,7 +207,6 @@ class FormPagamento extends Component {
               value={localEmbarque || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
-              required
               error={false}
             />
           </Grid>
@@ -223,7 +221,6 @@ class FormPagamento extends Component {
               value={transporte || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
-              required
               error={false}
             />
           </Grid>
@@ -258,7 +255,9 @@ class FormPagamento extends Component {
           <Grid item xs={12} md={4}></Grid>
           <Grid item xs={12} md={4} marginBottom={3}>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Cliente parceiro: </FormLabel>
+              <FormLabel component="legend" required>
+                Cliente parceiro:
+              </FormLabel>
               <RadioGroup
                 aria-label="clienteParceiro"
                 defaultValue="ativo"
@@ -295,6 +294,7 @@ class FormPagamento extends Component {
               value={opcionais || ' '}
               onChange={handleChange}
               sx={{ mb: 3 }}
+              required
             />
           </Grid>
           <Grid item xs={12} md={12} marginBottom={3}>

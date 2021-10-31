@@ -7,8 +7,7 @@ class SelecionarPasseio extends Component {
     this.state = {};
   }
   render() {
-    const { passeio, handlePasseio, selectedPasseio, fetchPagamento } =
-      this.props;
+    const { passeio, handlePasseio, selectedPasseio } = this.props;
     return (
       <Grid
         container

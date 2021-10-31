@@ -40,6 +40,7 @@ class Pagamento extends Component {
         historico: '',
         referenciaCliente: '',
         valorContrato: 0,
+        clienteDesistente: 0,
         historicoPagamento: 'salve',
         defaultHistoricoPagamento: 'salve',
       },
@@ -109,7 +110,7 @@ class Pagamento extends Component {
 
   fetchPasseios = async () => {
     const {
-      data: { passeio = [], success, message },
+      data: { passeio = [] /* success, message */ },
     } = await axios({
       method: 'GET',
       url: `http://localhost/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
@@ -123,16 +124,17 @@ class Pagamento extends Component {
       match: { params },
     } = this.props;
     const {
-      data: { passeio = [], success, message },
+      data: { /* pagamento = [], */ success /* message */ },
       data,
     } = await axios({
       method: 'GET',
       url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?idPasseio=${selectedPasseio.idPasseio}&idCliente=${params.id}`,
     });
 
-    if (success === 0) {
+    if (success === 1) {
       this.setState({ paymentExists: true });
-      // alert('opa');
+    } else {
+      this.setState({ isButtonDisabled: false });
     }
     console.log(data);
   };
@@ -242,13 +244,7 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
   };
 
   render() {
-    const {
-      activeStep,
-      selectedPasseio,
-      error,
-      isButtonDisabled,
-      paymentExists,
-    } = this.state;
+    const { activeStep, error, isButtonDisabled, paymentExists } = this.state;
     const steps = [
       {
         label: 'Registrar Cliente',
