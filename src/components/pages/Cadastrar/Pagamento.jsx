@@ -6,6 +6,7 @@ import FormPagamento from '../../partials/FormPagamento';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
+import ConfirmationDialog from '../../partials/ConfirmationDialog';
 
 class Pagamento extends Component {
   constructor(props) {
@@ -20,7 +21,9 @@ class Pagamento extends Component {
       toInt: this.toInt,
       setHistory: this.setHistory,
       handlePasseio: this.handlePasseio,
+      fetchPagamento: this.fetchPagamento,
       selectedPasseio: {},
+      paymentExists: false,
       pagamento: {
         valorVendido: 0,
         valorPago: 0,
@@ -98,26 +101,42 @@ class Pagamento extends Component {
     );
   };
 
+  handlePasseio = async ({ target }) => {
+    this.setState({ selectedPasseio: target.value }, () =>
+      this.fetchPagamento()
+    );
+  };
+
   fetchPasseios = async () => {
     const {
       data: { passeio = [], success, message },
     } = await axios({
       method: 'GET',
-      url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
+      url: `http://localhost/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
     });
     this.setState({ passeio });
   };
 
   fetchPagamento = async () => {
-    const { selectedPasseio } = this.props;
+    const { selectedPasseio } = this.state;
+    const {
+      match: { params },
+    } = this.props;
     const {
       data: { passeio = [], success, message },
+      data,
     } = await axios({
       method: 'GET',
-      url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php?idPasseio=${selectedPasseio}`,
+      url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?idPasseio=${selectedPasseio.idPasseio}&idCliente=${params.id}`,
     });
-    this.setState({ selectedPasseio: passeio });
+
+    if (success === 0) {
+      this.setState({ paymentExists: true });
+      // alert('opa');
+    }
+    console.log(data);
   };
+
   handleNext = () => {
     const { activeStep } = this.state;
     this.setState({ activeStep: activeStep + 1 });
@@ -190,7 +209,6 @@ class Pagamento extends Component {
     });
   };
 
-  
   setHistory = () => {
     const {
       pagamento: { novoValorPago, defaultHistoricoPagamento },
@@ -211,10 +229,6 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
     });
   };
 
-  handlePasseio = async ({ target }) => {
-    this.setState({ selectedPasseio: target.value }, () => {});
-  };
-
   handleDateChange = (date) => {
     this.setState((prevState) => {
       return {
@@ -228,7 +242,13 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
   };
 
   render() {
-    const { activeStep, selectedPasseio, error, isButtonDisabled } = this.state;
+    const {
+      activeStep,
+      selectedPasseio,
+      error,
+      isButtonDisabled,
+      paymentExists,
+    } = this.state;
     const steps = [
       {
         label: 'Registrar Cliente',
@@ -262,6 +282,7 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
             Por favor, verifique os campos e tente novamente!
           </Alert>
         )}
+        {paymentExists && <ConfirmationDialog />}
         {steps[activeStep].content}
         <Button onClick={this.handleNext} disabled={isButtonDisabled}>
           Próximo

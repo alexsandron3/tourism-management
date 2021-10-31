@@ -154,7 +154,7 @@ class Cliente extends Component {
       data,
     } = await axios({
       method: method,
-      url: `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php`,
+      url: `http://localhost/SistemaFabio-2.0/api/cliente.php`,
       data: { ...filteredState[0] },
     });
     console.log(data);
@@ -162,7 +162,9 @@ class Cliente extends Component {
       toast.success(message, {
         pauseOnFocusLoss: false,
       });
-      this.setState({ cliente });
+      setTimeout(() => {
+        this.setState({ cliente });
+      }, 3000);
     } else {
       toast.error(message, {
         pauseOnFocusLoss: false,
@@ -189,7 +191,7 @@ class Cliente extends Component {
       const {
         data: { cliente },
       } = await axios.get(
-        `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php?id=${id}`
+        `http://localhost/SistemaFabio-2.0/api/cliente.php?id=${id}`
       );
       this.setState({ ...cliente[0], isLoading: false });
     } else {
