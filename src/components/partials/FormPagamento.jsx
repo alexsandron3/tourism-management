@@ -21,6 +21,9 @@ class FormPagamento extends Component {
     super(props);
     this.state = {};
   }
+  componentDidMount() {
+    // this.props.validateForm();
+  }
   render() {
     const {
       handleChange,

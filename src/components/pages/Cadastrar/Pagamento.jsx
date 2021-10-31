@@ -7,6 +7,7 @@ import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import ConfirmationDialog from '../../partials/ConfirmationDialog';
+import { toast, ToastContainer } from 'react-toastify';
 
 class Pagamento extends Component {
   constructor(props) {
@@ -22,25 +23,25 @@ class Pagamento extends Component {
       setHistory: this.setHistory,
       handlePasseio: this.handlePasseio,
       fetchPagamento: this.fetchPagamento,
+      validateForm: this.validateForm,
       selectedPasseio: {},
       paymentExists: false,
       cliente: {},
       pagamento: {
-        valorVendido: 0,
-        valorPago: 0,
-        novoValorPago: 0,
-        valorPendente: 0,
-        taxaPagamento: 0,
-        previsaoPagamento: '',
-        localEmbarque: '',
-        transporte: '',
-        opcionais: '',
-        anotacoes: '',
-        seguroViagem: 0,
-        clienteParceiro: 0,
-        historico: '',
-        referenciaCliente: '',
-        valorContrato: 0,
+        valorVendido: 500,
+        valorPago: 400,
+        novoValorPago: 300,
+        valorPendente: -100,
+        taxaPagamento: 100,
+        previsaoPagamento: null,
+        localEmbarque: '2',
+        transporte: '3',
+        opcionais: '4',
+        anotacoes: '5',
+        seguroViagem: 1,
+        clienteParceiro: 1,
+        referenciaCliente: '6',
+        valorContrato: 500,
         clienteDesistente: 0,
         historicoPagamento: 'salve',
         defaultHistoricoPagamento: 'salve',
@@ -56,15 +57,28 @@ class Pagamento extends Component {
 
   validateForm = () => {
     const {
-      pagamento: { valorVendido, novoValorPago, valorPago, taxaPagamento },
+      pagamento: {
+        valorVendido,
+        novoValorPago,
+        valorPago,
+        taxaPagamento,
+        localEmbarque,
+        transporte,
+        opcionais,
+      },
+      activeStep,
     } = this.state;
-
-    // console.log(valorPago);
     const isValorVendidoHighestNumber =
       valorVendido >= novoValorPago &&
       valorVendido >= valorPago &&
       valorVendido >= taxaPagamento;
-    if (!isValorVendidoHighestNumber) {
+
+    const areAllMandatoryFilleds =
+      localEmbarque.length && transporte.length && opcionais.length;
+    if (
+      !isValorVendidoHighestNumber ||
+      (!areAllMandatoryFilleds && activeStep === 2)
+    ) {
       this.setState({ error: true, isButtonDisabled: true });
     } else {
       this.setState({ error: false, isButtonDisabled: false });
@@ -124,8 +138,9 @@ class Pagamento extends Component {
     if (success) {
       this.setState({ cliente: cliente[0] });
     }
-    console.log(...cliente);
+    // console.log(...cliente);
   };
+
   fetchPasseios = async () => {
     const {
       data: { passeio = [] /* success, message */ },
@@ -154,25 +169,60 @@ class Pagamento extends Component {
     } else {
       this.setState({ isButtonDisabled: false });
     }
-    console.log(data);
+    // console.log(data);
   };
 
+  sendData = async () => {
+    const {
+      selectedPasseio: { idPasseio },
+      cliente: { idCliente },
+      pagamento,
+    } = this.state;
+    const filteredState = [pagamento].map(
+      ({
+        novoValorPago,
+        defaultHistoricoPagamento,
+        referenciaCliente,
+        ...pagamento
+      }) => pagamento
+    );
+    const {
+      data: { success, message },
+    } = await axios({
+      method: 'POST',
+      url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?`,
+      data: { ...filteredState[0], idCliente, idPasseio },
+    });
+    // console.log(Object.keys(data));
+    if (success) {
+      toast.success(message, {
+        pauseOnFocusLoss: false,
+      });
+    } else {
+      toast.error(message, {
+        pauseOnFocusLoss: false,
+      });
+    }
+  };
   handleNext = () => {
     const { activeStep } = this.state;
     this.setState({ activeStep: activeStep + 1 });
   };
 
   handleChange = ({ target }) => {
-    this.setState((prevState) => {
-      const value = target.value.toUpperCase();
-      return {
-        ...prevState,
-        pagamento: {
-          ...prevState.pagamento,
-          [target.name]: value,
-        },
-      };
-    });
+    this.setState(
+      (prevState) => {
+        const value = target.value.toUpperCase();
+        return {
+          ...prevState,
+          pagamento: {
+            ...prevState.pagamento,
+            [target.name]: value,
+          },
+        };
+      },
+      () => this.validateForm()
+    );
   };
 
   handleNumbers = ({ target }) => {
@@ -291,16 +341,21 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
             </Step>
           ))}
         </Stepper>
-        {error && (
-          <Alert severity="error" sx={{ justifyContent: 'center' }}>
-            Por favor, verifique os campos e tente novamente!
-          </Alert>
-        )}
         {paymentExists && <ConfirmationDialog />}
         {steps[activeStep].content}
-        <Button onClick={this.handleNext} disabled={isButtonDisabled}>
+        {error && (
+          <Alert severity="warning" sx={{ justifyContent: 'center' }}>
+            Por favor, preencha todos os campos corretamente!
+          </Alert>
+        )}
+        {/* { } */}
+        <Button
+          onClick={activeStep === 2 ? this.sendData : this.handleNext}
+          disabled={isButtonDisabled}
+        >
           Próximo
         </Button>
+        <ToastContainer pauseOnFocusLoss />
       </Content>
     );
   }
