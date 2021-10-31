@@ -24,6 +24,7 @@ class Pagamento extends Component {
       fetchPagamento: this.fetchPagamento,
       selectedPasseio: {},
       paymentExists: false,
+      cliente: {},
       pagamento: {
         valorVendido: 0,
         valorPago: 0,
@@ -50,6 +51,7 @@ class Pagamento extends Component {
   }
   componentDidMount() {
     this.fetchPasseios();
+    this.fetchCliente();
   }
 
   validateForm = () => {
@@ -108,6 +110,22 @@ class Pagamento extends Component {
     );
   };
 
+  fetchCliente = async () => {
+    const {
+      match: { params },
+    } = this.props;
+    const {
+      data: { cliente = [], success },
+    } = await axios({
+      method: 'GET',
+      url: `http://localhost/SistemaFabio-2.0/api/cliente.php?id=${params.id}`,
+    });
+
+    if (success) {
+      this.setState({ cliente: cliente[0] });
+    }
+    console.log(...cliente);
+  };
   fetchPasseios = async () => {
     const {
       data: { passeio = [] /* success, message */ },

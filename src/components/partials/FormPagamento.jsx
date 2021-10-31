@@ -6,6 +6,8 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Alert,
+  Typography,
 } from '@mui/material';
 import React, { Component } from 'react';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -45,10 +47,22 @@ class FormPagamento extends Component {
         referenciaCliente,
         clienteDesistente,
       },
+      selectedPasseio: { nomePasseio, dataPasseio },
+      cliente: { nomeCliente },
       handleDateChange,
     } = this.props;
     return (
       <form action="" onSubmit={this.handleSubmit}>
+        <Alert
+          icon={false}
+          severity="info"
+          sx={{ justifyContent: 'center', textAlign: 'center' }}
+        >
+          <Typography variant="h5">{`Cliente: ${nomeCliente}`}</Typography>
+          <Typography variant="h5">{`Passeio: ${nomePasseio} EM ${moment(
+            dataPasseio
+          ).format('DD/MM/YYYY')}`}</Typography>
+        </Alert>
         <Grid container justifyContent="space-between" p={3}>
           <Grid item xs={12} md={12}>
             <TextField
@@ -208,6 +222,7 @@ class FormPagamento extends Component {
               onChange={handleChange}
               sx={{ mb: 3 }}
               error={false}
+              required
             />
           </Grid>
           <Grid item xs={12} md={4}></Grid>
@@ -222,6 +237,7 @@ class FormPagamento extends Component {
               onChange={handleChange}
               sx={{ mb: 3 }}
               error={false}
+              required
             />
           </Grid>
           <Grid item xs={12} md={4} marginBottom={3}>
