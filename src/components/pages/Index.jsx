@@ -140,7 +140,7 @@ export default class Index extends Component {
       this.setState({ isLoading: true });
       const answer = await axios({
         method: 'GET',
-        url: `https://fabiopasseios.com.br/ap/api/pagamento.php?inicio=${moment(
+        url: `https://fabiopasseios.com.br/ap/pagamento.php?inicio=${moment(
           startDate
         ).format('yyyy-MM-DD')}&fim=${moment(endDate).format(
           'yyyy-MM-DD'

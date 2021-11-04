@@ -154,7 +154,7 @@ class Cliente extends Component {
       data,
     } = await axios({
       method: method,
-      url: `https://fabiopasseios.com.br/ap/SistemaFabio-2.0/api/cliente.php`,
+      url: `https://fabiopasseios.com.br/ap/cliente.php`,
       data: { ...filteredState[0] },
     });
     console.log(data);
@@ -191,7 +191,7 @@ class Cliente extends Component {
       const {
         data: { cliente },
       } = await axios.get(
-        `https://fabiopasseios.com.br/ap/SistemaFabio-2.0/api/cliente.php?id=${id}`
+        `https://fabiopasseios.com.br/ap/cliente.php?id=${id}`
       );
       this.setState({ ...cliente[0], isLoading: false });
     } else {

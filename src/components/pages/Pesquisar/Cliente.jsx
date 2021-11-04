@@ -135,7 +135,7 @@ class Cliente extends Component {
       data: { cliente = [], success, message },
     } = await axios({
       method: 'GET',
-      url: `https://fabiopasseios.com.br/ap/SistemaFabio-2.0/api/cliente.php?pesquisarCliente=${pesquisarCliente}`,
+      url: `https://fabiopasseios.com.br/ap/cliente.php?pesquisarCliente=${pesquisarCliente}`,
     });
     if (success) {
       toast.success(message, {
