@@ -132,7 +132,7 @@ class Pagamento extends Component {
       data: { cliente = [], success },
     } = await axios({
       method: 'GET',
-      url: `http://http://45.170.146.45//SistemaFabio-2.0/api/cliente.php?id=${params.id}`,
+      url: `https://fabiopasseios.com.br/ap/SistemaFabio-2.0/api/cliente.php?id=${params.id}`,
     });
 
     if (success) {
@@ -146,7 +146,7 @@ class Pagamento extends Component {
       data: { passeio = [] /* success, message */ },
     } = await axios({
       method: 'GET',
-      url: `http://http://45.170.146.45//SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
+      url: `https://fabiopasseios.com.br/ap/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
     });
     this.setState({ passeio });
   };
@@ -161,7 +161,7 @@ class Pagamento extends Component {
       data,
     } = await axios({
       method: 'GET',
-      url: `http://http://45.170.146.45//SistemaFabio-2.0/api/pagamento.php?idPasseio=${selectedPasseio.idPasseio}&idCliente=${params.id}`,
+      url: `https://fabiopasseios.com.br/ap/SistemaFabio-2.0/api/pagamento.php?idPasseio=${selectedPasseio.idPasseio}&idCliente=${params.id}`,
     });
 
     if (success === 1) {
@@ -191,7 +191,7 @@ class Pagamento extends Component {
       data,
     } = await axios({
       method: 'POST',
-      url: `http://http://45.170.146.45//SistemaFabio-2.0/api/pagamento.php?`,
+      url: `https://fabiopasseios.com.br/ap/SistemaFabio-2.0/api/pagamento.php?`,
       data: { ...filteredState[0], idCliente, idPasseio, idadeCliente },
     });
     console.log(data);
