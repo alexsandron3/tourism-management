@@ -135,7 +135,7 @@ class Cliente extends Component {
       data: { cliente = [], success, message },
     } = await axios({
       method: 'GET',
-      url: `http://localhost/Projetos/SistemaFabio-2.0/api/cliente.php?pesquisarCliente=${pesquisarCliente}`,
+      url: `http://localhost/SistemaFabio-2.0/api/cliente.php?pesquisarCliente=${pesquisarCliente}`,
     });
     if (success) {
       toast.success(message, {
@@ -301,7 +301,11 @@ class Cliente extends Component {
                 onChange={this.handleChange}
                 sx={{ marginBottom: 2 }}
               />
-              <Button type="submit" onClick={this.fetchUser}>
+              <Button
+                type="submit"
+                onClick={this.fetchUser}
+                variant="contained"
+              >
                 Pesquisar
               </Button>
             </form>

@@ -31,6 +31,7 @@ class FormPagamento extends Component {
       toFloat,
       toInt,
       setHistory,
+      cliente: { idadeCliente },
       pagamento: {
         valorVendido,
         valorPago,
@@ -193,7 +194,7 @@ class FormPagamento extends Component {
               variant="standard"
               fullWidth
               name="idadeCliente"
-              // value={nomeCliente}
+              value={idadeCliente}
               // onChange={this.handleChange}
               sx={{ mb: 3 }}
               disabled

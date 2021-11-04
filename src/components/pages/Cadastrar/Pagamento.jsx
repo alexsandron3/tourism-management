@@ -175,7 +175,7 @@ class Pagamento extends Component {
   sendData = async () => {
     const {
       selectedPasseio: { idPasseio },
-      cliente: { idCliente },
+      cliente: { idCliente, idadeCliente },
       pagamento,
     } = this.state;
     const filteredState = [pagamento].map(
@@ -188,12 +188,13 @@ class Pagamento extends Component {
     );
     const {
       data: { success, message },
+      data,
     } = await axios({
       method: 'POST',
       url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?`,
-      data: { ...filteredState[0], idCliente, idPasseio },
+      data: { ...filteredState[0], idCliente, idPasseio, idadeCliente },
     });
-    // console.log(Object.keys(data));
+    console.log(data);
     if (success) {
       toast.success(message, {
         pauseOnFocusLoss: false,
