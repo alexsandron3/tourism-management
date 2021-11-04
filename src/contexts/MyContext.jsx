@@ -3,7 +3,7 @@ import axios from 'axios';
 export const MyContext = createContext();
 
 const Axios = axios.create({
-  baseUrl: 'http://localhost/Projetos/SistemaFabio-2.0/api/',
+  baseUrl: 'http://http://45.170.146.45//Projetos/SistemaFabio-2.0/api/',
 });
 class MyContextProvider extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class MyContextProvider extends Component {
   };
   loginUser = async ({ username, password }) => {
     const login = await Axios.post(
-      'http://localhost/Projetos/SistemaFabio-2.0/api/login.php',
+      'http://http://45.170.146.45//Projetos/SistemaFabio-2.0/api/login.php',
       {
         username: username,
         password: password,
@@ -37,7 +37,7 @@ class MyContextProvider extends Component {
     if (loginToken) {
       Axios.defaults.headers.common['Authorization'] = `bearer ${loginToken}`;
       const { data } = await Axios.get(
-        'http://localhost/Projetos/SistemaFabio-2.0/api/user-info.php'
+        'http://http://45.170.146.45//Projetos/SistemaFabio-2.0/api/user-info.php'
       );
       if (data.success && data.user) {
         this.setState({

@@ -35,7 +35,7 @@ class Passeio extends Component {
       data: { passeio = [], success, message },
     } = await axios({
       method: 'GET',
-      url: `http://localhost/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=${pesquisarPasseio}`,
+      url: `http://http://45.170.146.45//SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=${pesquisarPasseio}`,
     });
     if (success) {
       toast.success(message, {

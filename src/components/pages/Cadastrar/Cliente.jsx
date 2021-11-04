@@ -154,7 +154,7 @@ class Cliente extends Component {
       data,
     } = await axios({
       method: method,
-      url: `http://localhost/SistemaFabio-2.0/api/cliente.php`,
+      url: `http://http://45.170.146.45//SistemaFabio-2.0/api/cliente.php`,
       data: { ...filteredState[0] },
     });
     console.log(data);
@@ -191,7 +191,7 @@ class Cliente extends Component {
       const {
         data: { cliente },
       } = await axios.get(
-        `http://localhost/SistemaFabio-2.0/api/cliente.php?id=${id}`
+        `http://http://45.170.146.45//SistemaFabio-2.0/api/cliente.php?id=${id}`
       );
       this.setState({ ...cliente[0], isLoading: false });
     } else {

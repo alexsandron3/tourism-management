@@ -92,7 +92,7 @@ class Passeio extends Component {
       data,
     } = await axios({
       method: method,
-      url: `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php`,
+      url: `http://http://45.170.146.45//Projetos/SistemaFabio-2.0/api/passeio.php`,
       data: { ...filteredState[0] },
     });
     console.log(data);
@@ -126,7 +126,7 @@ class Passeio extends Component {
       const {
         data: { passeio },
       } = await axios.get(
-        `http://localhost/Projetos/SistemaFabio-2.0/api/passeio.php?id=${id}`
+        `http://http://45.170.146.45//Projetos/SistemaFabio-2.0/api/passeio.php?id=${id}`
       );
       this.setState({ ...passeio[0], isLoading: false });
     } else {
