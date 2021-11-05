@@ -132,7 +132,7 @@ class Pagamento extends Component {
       data: { cliente = [], success },
     } = await axios({
       method: 'GET',
-      url: `https://fabiopasseios.com.br/ap/cliente.php?id=${params.id}`,
+      url: `https://apifabio.herokuapp.com/cliente.php?id=${params.id}`,
     });
 
     if (success) {
@@ -146,7 +146,7 @@ class Pagamento extends Component {
       data: { passeio = [] /* success, message */ },
     } = await axios({
       method: 'GET',
-      url: `https://fabiopasseios.com.br/ap/passeio.php?pesquisarPasseio=`,
+      url: `https://apifabio.herokuapp.com/passeio.php?pesquisarPasseio=`,
     });
     this.setState({ passeio });
   };
@@ -161,7 +161,7 @@ class Pagamento extends Component {
       data,
     } = await axios({
       method: 'GET',
-      url: `https://fabiopasseios.com.br/ap/pagamento.php?idPasseio=${selectedPasseio.idPasseio}&idCliente=${params.id}`,
+      url: `https://apifabio.herokuapp.com/pagamento.php?idPasseio=${selectedPasseio.idPasseio}&idCliente=${params.id}`,
     });
 
     if (success === 1) {
@@ -191,7 +191,7 @@ class Pagamento extends Component {
       data,
     } = await axios({
       method: 'POST',
-      url: `https://fabiopasseios.com.br/ap/pagamento.php?`,
+      url: `https://apifabio.herokuapp.com/pagamento.php?`,
       data: { ...filteredState[0], idCliente, idPasseio, idadeCliente },
     });
     console.log(data);

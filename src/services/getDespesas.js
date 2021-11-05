@@ -7,7 +7,7 @@ for (const key in data) {
 }
 const sendRequest = async () => {
   try {
-    const resp = await axios.post('https://fabiopasseios.com.br/ap/Projetos/SistemaFabio-2.0/teste/findDespesa.php', formData, {
+    const resp = await axios.post('https://apifabio.herokuapp.com/Projetos/SistemaFabio-2.0/teste/findDespesa.php', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     const {data: {despesa}} = resp

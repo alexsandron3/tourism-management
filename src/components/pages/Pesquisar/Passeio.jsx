@@ -35,7 +35,7 @@ class Passeio extends Component {
       data: { passeio = [], success, message },
     } = await axios({
       method: 'GET',
-      url: `https://fabiopasseios.com.br/ap/passeio.php?pesquisarPasseio=${pesquisarPasseio}`,
+      url: `https://apifabio.herokuapp.com/passeio.php?pesquisarPasseio=${pesquisarPasseio}`,
     });
     if (success) {
       toast.success(message, {
