@@ -158,7 +158,6 @@ class Pagamento extends Component {
     } = this.props;
     const {
       data: { /* pagamento = [], */ success /* message */ },
-      data,
     } = await axios({
       method: 'GET',
       url: `https://apifabio.herokuapp.com/pagamento.php?idPasseio=${selectedPasseio.idPasseio}&idCliente=${params.id}`,

@@ -15,7 +15,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
 import moment from 'moment';
 import { parseISO } from 'date-fns';
-import BigNumber from 'bignumber.js';
+// import BigNumber from 'bignumber.js';
 class FormPagamento extends Component {
   constructor(props) {
     super(props);
@@ -49,7 +49,7 @@ class FormPagamento extends Component {
         seguroViagem,
         historicoPagamento,
         referenciaCliente,
-        clienteDesistente,
+        // clienteDesistente,
       },
       selectedPasseio: { nomePasseio, dataPasseio },
       cliente: { nomeCliente },
