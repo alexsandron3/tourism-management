@@ -92,7 +92,7 @@ class Passeio extends Component {
       data,
     } = await axios({
       method: method,
-      url: `https://apifabio.herokuapp.com/Projetos/SistemaFabio-2.0/api/passeio.php`,
+      url: `https://apifabio.herokuapp.com/api/passeio.php`,
       data: { ...filteredState[0] },
     });
     console.log(data);
@@ -126,7 +126,7 @@ class Passeio extends Component {
       const {
         data: { passeio },
       } = await axios.get(
-        `https://apifabio.herokuapp.com/Projetos/SistemaFabio-2.0/api/passeio.php?id=${id}`
+        `https://apifabio.herokuapp.com/api/passeio.php?id=${id}`
       );
       this.setState({ ...passeio[0], isLoading: false });
     } else {
