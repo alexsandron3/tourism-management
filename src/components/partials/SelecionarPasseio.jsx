@@ -1,4 +1,5 @@
 import { Grid, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import moment from 'moment';
 import { nanoid } from 'nanoid';
 import React, { Component } from 'react';
 class SelecionarPasseio extends Component {
@@ -31,7 +32,9 @@ class SelecionarPasseio extends Component {
               // console.log(passeio);
               return (
                 <MenuItem value={passeio} key={nanoid()}>
-                  {passeio.nomePasseio}
+                  {`${passeio.nomePasseio} EM ${moment(
+                    passeio.dataPasseio
+                  ).format('DD/MM/YYYY')} ${passeio.idPasseio}`}
                 </MenuItem>
               );
             })}

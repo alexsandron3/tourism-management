@@ -14,11 +14,7 @@ class ConfirmationDialog extends Component {
   }
   handleClose = ({ target }) => {
     console.log(target.value);
-    if (target.value === 'true') {
-      return alert(1);
-    } else {
-      this.setState({ open: false });
-    }
+    this.setState({ open: false });
   };
   render() {
     const { open } = this.state;
@@ -31,16 +27,13 @@ class ConfirmationDialog extends Component {
       >
         <DialogContent>
           <DialogContentText>
-            Este cliente já tem um pagamento no passeio selecionado,
-            redirecionar para edição de pagamento?
+            Este cliente já tem um pagamento no passeio selecionado ao clicar em
+            PRÓXIMO você irá para edição de pagamento.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleClose} value={true}>
-            Sim
-          </Button>
-          <Button onClick={this.handleClose} value={false}>
-            Não
+            OK
           </Button>
         </DialogActions>
       </Dialog>

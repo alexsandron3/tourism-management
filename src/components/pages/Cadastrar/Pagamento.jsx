@@ -1,4 +1,12 @@
-import { Step, Stepper, StepLabel, Button, Alert } from '@mui/material';
+import {
+  Step,
+  Stepper,
+  StepLabel,
+  Button,
+  Alert,
+  Backdrop,
+  CircularProgress,
+} from '@mui/material';
 import React, { Component } from 'react';
 import Content from '../../partials/Content';
 import SelecionarPasseio from '../../partials/SelecionarPasseio';
@@ -13,6 +21,7 @@ class Pagamento extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       activeStep: 1,
       passeio: [],
       handleChange: this.handleChange,
@@ -28,23 +37,23 @@ class Pagamento extends Component {
       paymentExists: false,
       cliente: {},
       pagamento: {
-        valorVendido: 500,
-        valorPago: 400,
-        novoValorPago: 300,
-        valorPendente: -100,
-        taxaPagamento: 100,
+        valorVendido: 0,
+        valorPago: 0,
+        novoValorPago: 0,
+        valorPendente: 0,
+        taxaPagamento: 0,
         previsaoPagamento: null,
-        localEmbarque: '2',
-        transporte: '3',
-        opcionais: '4',
-        anotacoes: '5',
-        seguroViagem: 1,
-        clienteParceiro: 1,
-        referenciaCliente: '6',
-        valorContrato: 500,
+        localEmbarque: ' ',
+        transporte: ' ',
+        opcionais: ' ',
+        anotacoes: ' ',
+        seguroViagem: 0,
+        clienteParceiro: 0,
+        referenciaCliente: ' ',
+        valorContrato: 0,
         clienteDesistente: 0,
-        historicoPagamento: 'salve',
-        defaultHistoricoPagamento: 'salve',
+        historicoPagamento: ' ',
+        defaultHistoricoPagamento: ' ',
       },
       error: false,
       isButtonDisabled: true,
@@ -119,12 +128,14 @@ class Pagamento extends Component {
   };
 
   handlePasseio = async ({ target }) => {
-    this.setState({ selectedPasseio: target.value }, () =>
+    this.setState({ selectedPasseio: target.value, isLoading: true }, () =>
       this.fetchPagamento()
     );
+    this.setState({ isLoading: false });
   };
 
   fetchCliente = async () => {
+    this.setState({ isLoading: true });
     const {
       match: { params },
     } = this.props;
@@ -134,7 +145,7 @@ class Pagamento extends Component {
       method: 'GET',
       url: `http://localhost/SistemaFabio-2.0/api/cliente.php?id=${params.id}`,
     });
-
+    this.setState({ isLoading: false });
     if (success) {
       this.setState({ cliente: cliente[0] });
     }
@@ -142,22 +153,26 @@ class Pagamento extends Component {
   };
 
   fetchPasseios = async () => {
+    this.setState({ isLoading: true });
+
     const {
       data: { passeio = [] /* success, message */ },
     } = await axios({
       method: 'GET',
       url: `http://localhost/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
     });
-    this.setState({ passeio });
+    this.setState({ passeio, isLoading: false });
   };
 
   fetchPagamento = async () => {
     const { selectedPasseio } = this.state;
+    this.setState({ isLoading: true });
+
     const {
       match: { params },
     } = this.props;
     const {
-      data: { /* pagamento = [], */ success /* message */ },
+      data: { success, pagamento },
       data,
     } = await axios({
       method: 'GET',
@@ -165,14 +180,22 @@ class Pagamento extends Component {
     });
 
     if (success === 1) {
-      this.setState({ paymentExists: true });
+      this.setState({
+        paymentExists: true,
+        isButtonDisabled: true,
+        pagamento: { ...pagamento[0] },
+      });
     } else {
       this.setState({ isButtonDisabled: false });
     }
-    // console.log(data);
+    this.setState({ isLoading: false });
+
+    // console.log(...pagamento);
   };
 
   sendData = async () => {
+    this.setState({ isLoading: true });
+
     const {
       selectedPasseio: { idPasseio },
       cliente: { idCliente, idadeCliente },
@@ -187,7 +210,7 @@ class Pagamento extends Component {
       }) => pagamento
     );
     const {
-      data: { success, message },
+      data: { success, message, left },
       data,
     } = await axios({
       method: 'POST',
@@ -197,17 +220,35 @@ class Pagamento extends Component {
     console.log(data);
     if (success) {
       toast.success(message, {
-        pauseOnFocusLoss: false,
+        pauseOnFocusLoss: true,
       });
+      setTimeout(() => {
+        toast.info(left, {
+          pauseOnFocusLoss: true,
+        });
+      }, 300);
+      setTimeout(() => {
+        window.open(
+          `http://localhost/SistemaFabio-2.0/contrato.php?id=${idCliente}`
+        );
+      }, 300);
     } else {
       toast.error(message, {
-        pauseOnFocusLoss: false,
+        pauseOnFocusLoss: true,
       });
     }
+    this.setState({ isLoading: false });
   };
+
   handleNext = () => {
     const { activeStep } = this.state;
     this.setState({ activeStep: activeStep + 1 });
+  };
+
+  handlePrevious = () => {
+    const { activeStep } = this.state;
+    this.setState({ activeStep: activeStep - 1 });
+    this.fetchPagamento();
   };
 
   handleChange = ({ target }) => {
@@ -313,7 +354,8 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
   };
 
   render() {
-    const { activeStep, error, isButtonDisabled, paymentExists } = this.state;
+    const { activeStep, error, isButtonDisabled, paymentExists, isLoading } =
+      this.state;
     const steps = [
       {
         label: 'Registrar Cliente',
@@ -335,6 +377,12 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
 
     return (
       <Content cardTitle={steps[activeStep].title}>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map(({ label }) => (
             <Step key={label}>
@@ -351,12 +399,19 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
         )}
         {/* { } */}
         <Button
+          onClick={this.handlePrevious}
+          disabled={activeStep === 1 ? true : false}
+        >
+          Anterior
+        </Button>
+        <Button
           onClick={activeStep === 2 ? this.sendData : this.handleNext}
           disabled={isButtonDisabled}
         >
-          Próximo
+          {activeStep === 2 ? 'Concluir e emitir contrato' : 'Próximo'}
         </Button>
-        <ToastContainer pauseOnFocusLoss />
+
+        <ToastContainer pauseOnFocusLoss newestOnTop />
       </Content>
     );
   }
