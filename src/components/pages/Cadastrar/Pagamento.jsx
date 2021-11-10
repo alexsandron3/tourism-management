@@ -182,11 +182,9 @@ class Pagamento extends Component {
     if (success === 1) {
       this.setState({
         paymentExists: true,
-        isButtonDisabled: true,
+        isButtonDisabled: false,
         pagamento: { ...pagamento[0] },
       });
-    } else {
-      this.setState({ isButtonDisabled: false });
     }
     this.setState({ isLoading: false });
 
@@ -206,9 +204,14 @@ class Pagamento extends Component {
         novoValorPago,
         defaultHistoricoPagamento,
         referenciaCliente,
+        createdAt,
+        dataPagamento,
+        lastModified,
         ...pagamento
       }) => pagamento
     );
+    if (Object.keys(pagamento).some((key) => key === 'idPagamento'))
+      alert('opa!!');
     const {
       data: { success, message, left },
       data,

@@ -19,6 +19,7 @@ const columns = [
     flex: 1,
     headerAlign: 'center',
     align: 'center',
+    hide: true,
   },
   {
     field: 'nomePasseio',
@@ -91,7 +92,9 @@ const columns = [
     type: 'number',
     minWidth: 100,
     valueGetter: (params) =>
-      params.row.lotacao - params.row.quitado + params.row.confirmado,
+      parseInt(params.row.lotacao) -
+      parseInt(params.row.quitado) +
+      parseInt(params.row.confirmado),
     headerAlign: 'center',
     align: 'center',
   },
