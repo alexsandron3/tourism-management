@@ -32,11 +32,14 @@ import axios from 'axios';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 
+import { setNewClient } from '../../../actions/';
+import { connect } from 'react-redux';
+
 class Cliente extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nomeCliente: '',
+      nomeCliente: Math.random(),
       emailCliente: '',
       rgCliente: '',
       orgaoEmissor: '',
@@ -62,6 +65,7 @@ class Cliente extends Component {
   }
   componentDidMount() {
     this.fetchCliente();
+    console.log(this.props);
   }
 
   handleChange = ({ target }) => {
@@ -143,6 +147,8 @@ class Cliente extends Component {
 
   sendData = async () => {
     const { id } = this.props.match.params;
+    const { dispatchSetValue } = this.props;
+
     const method = id ? 'UPDATE' : 'POST';
     const state = [];
     state.push(this.state);
@@ -162,6 +168,8 @@ class Cliente extends Component {
       toast.success(message, {
         pauseOnFocusLoss: false,
       });
+      dispatchSetValue(...filteredState);
+
       setTimeout(() => {
         this.setState({ cliente });
       }, 3000);
@@ -174,7 +182,6 @@ class Cliente extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-
     const isAnyInputInvalid = this.validateInputs();
     if (isAnyInputInvalid) {
       toast.error('Por favor, preencha todos os campos corretamente!', {
@@ -574,4 +581,10 @@ class Cliente extends Component {
   }
 }
 
-export default Cliente;
+const mapDispatchToProps = (dispatch) => ({
+  dispatchSetValue: (value) => dispatch(setNewClient(value)),
+});
+
+const mapStateToProps = (state) => ({ ...state });
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cliente);

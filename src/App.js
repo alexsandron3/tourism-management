@@ -16,7 +16,9 @@ function App() {
         <Route path="/pesquisar/passeio" component={Passeio} />
         <Route path="/cadastrar/pagamento/:id?" component={CadPagamento} />
         <Route path="/cadastrar/cliente/:id?" component={CadCliente} />
+        <Route path="/editar/cliente/:id?" component={CadCliente} />
         <Route path="/cadastrar/passeio/:id?" component={CadPasseio} />
+        <Route path="/editar/passeio/:id?" component={CadPasseio} />
         <Route path="/" component={Index} />
       </Switch>
     </BrowserRouter>

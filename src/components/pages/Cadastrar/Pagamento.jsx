@@ -16,6 +16,8 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import ConfirmationDialog from '../../partials/ConfirmationDialog';
 import { toast, ToastContainer } from 'react-toastify';
+import { setNewEvent } from '../../../actions';
+import { connect } from 'react-redux';
 
 class Pagamento extends Component {
   constructor(props) {
@@ -126,8 +128,11 @@ class Pagamento extends Component {
       () => this.validateForm()
     );
   };
-
+  // Essa é a segunda
   handlePasseio = async ({ target }) => {
+    const { dispatchSetValue, history } = this.props;
+    dispatchSetValue(target.value);
+    console.log(this.props);
     this.setState({ selectedPasseio: target.value, isLoading: true }, () =>
       this.fetchPagamento()
     );
@@ -400,7 +405,6 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
             Por favor, preencha todos os campos corretamente!
           </Alert>
         )}
-        {/* { } */}
         <Button
           onClick={this.handlePrevious}
           disabled={activeStep === 1 ? true : false}
@@ -420,4 +424,10 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
   }
 }
 
-export default Pagamento;
+const mapDispatchToProps = (dispatch) => ({
+  dispatchSetValue: (value) => dispatch(setNewEvent(value)),
+});
+
+const mapStateToProps = (state) => ({ ...state });
+
+export default connect(mapStateToProps, mapDispatchToProps)(Pagamento);
