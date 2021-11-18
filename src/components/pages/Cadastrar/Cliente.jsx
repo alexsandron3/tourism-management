@@ -233,31 +233,13 @@ class Cliente extends Component {
       cliente,
     } = this.state;
     const { id } = this.props.match.params;
-    const steps = [
-      {
-        label: 'Registrar Cliente',
-      },
-      {
-        label: 'Selecionar Passeio',
-        title: 'Selecione um passeio para Pagamento',
-        // content: <SelecionarPasseio {...this.state} />,
-      },
-      {
-        label: 'Realizar Pagamento',
-        title: 'Pagamento',
-        // content: <FormPagamento {...this.state} />,
-      },
-      {
-        label: 'Emitir Contrato',
-      },
-    ];
-
+    const { stepperReducer } = this.props;
     if (cliente)
       return <Redirect push to={`/cadastrar/pagamento/${cliente}`} />;
     return (
       <Content cardTitle={id ? 'Editar Cliente' : 'Cadastrar Cliente'}>
         <Stepper activeStep={0} alternativeLabel>
-          {steps.map(({ label }) => (
+          {stepperReducer.steps.map(({ label }) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
             </Step>

@@ -374,28 +374,12 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
     const { activeStep, error, paymentExists, isLoading } = this.state;
     const { paymentReducer, stepperReducer, handleNext, handlePrevious } =
       this.props;
-    const steps = [
-      {
-        label: 'Registrar Cliente',
-      },
-      {
-        label: 'Selecionar Passeio',
-        title: 'Selecione um passeio para Pagamento',
-        content: <SelecionarPasseio />,
-      },
-      {
-        label: 'Realizar Pagamento',
-        title: 'Pagamento',
-        content: <FormPagamento {...this.state} />,
-      },
-      {
-        label: 'Emitir Contrato',
-      },
-    ];
-    console.log(steps[stepperReducer.activeStep]);
+    console.log(stepperReducer.steps[stepperReducer.activeStep]);
 
     return (
-      <Content cardTitle={steps[stepperReducer.activeStep].title}>
+      <Content
+        cardTitle={stepperReducer.steps[stepperReducer.activeStep].title}
+      >
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={isLoading}
@@ -403,14 +387,14 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
           <CircularProgress color="inherit" />
         </Backdrop>
         <Stepper activeStep={stepperReducer.activeStep} alternativeLabel>
-          {steps.map(({ label }) => (
+          {stepperReducer.steps.map(({ label }) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
             </Step>
           ))}
         </Stepper>
         {paymentExists && <ConfirmationDialog />}
-        {steps[stepperReducer.activeStep].content}
+        {stepperReducer.steps[stepperReducer.activeStep].content}
         {error && (
           <Alert severity="warning" sx={{ justifyContent: 'center' }}>
             Por favor, preencha todos os campos corretamente!
