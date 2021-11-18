@@ -16,6 +16,7 @@ import DatePicker from '@mui/lab/DatePicker';
 import moment from 'moment';
 import { parseISO } from 'date-fns';
 import BigNumber from 'bignumber.js';
+import { connect } from 'react-redux';
 class FormPagamento extends Component {
   constructor(props) {
     super(props);
@@ -51,7 +52,7 @@ class FormPagamento extends Component {
         referenciaCliente,
         clienteDesistente,
       },
-      selectedPasseio: { nomePasseio, dataPasseio },
+      eventReducer: { nomePasseio, dataPasseio },
       cliente: { nomeCliente },
       handleDateChange,
     } = this.props;
@@ -349,4 +350,6 @@ class FormPagamento extends Component {
   }
 }
 
-export default FormPagamento;
+const mapStateToProps = (state) => ({ ...state });
+
+export default connect(mapStateToProps)(FormPagamento);

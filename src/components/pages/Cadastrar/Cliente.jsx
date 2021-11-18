@@ -168,7 +168,8 @@ class Cliente extends Component {
       toast.success(message, {
         pauseOnFocusLoss: false,
       });
-      dispatchSetValue(...filteredState);
+      const dispatchValue = { ...filteredState[0], cliente: data.cliente };
+      dispatchSetValue(dispatchValue);
 
       setTimeout(() => {
         this.setState({ cliente });
@@ -582,7 +583,8 @@ class Cliente extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchSetValue: (value) => dispatch(setNewClient(value)),
+  dispatchSetValue: (client, idClient) =>
+    dispatch(setNewClient(client, idClient)),
 });
 
 const mapStateToProps = (state) => ({ ...state });

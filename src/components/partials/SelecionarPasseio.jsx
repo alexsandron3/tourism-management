@@ -2,13 +2,53 @@ import { Grid, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import moment from 'moment';
 import { nanoid } from 'nanoid';
 import React, { Component } from 'react';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { setNewEvent, fetchPayment } from '../../actions';
 class SelecionarPasseio extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { passeios: [] };
   }
+  componentDidMount() {
+    this.fetchPasseios();
+  }
+  fetchPasseios = async () => {
+    this.setState({ isLoading: true });
+
+    const {
+      data: { passeio = [] /* success, message */ },
+    } = await axios({
+      method: 'GET',
+      url: `http://localhost/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
+    });
+
+    this.setState({ passeios: passeio, isLoading: false });
+  };
+
+  handlePasseio = ({ target }) => {
+    const {
+      dispatchSetEvent,
+      dispatchFetchPayment,
+      eventReducer,
+      clientReducer,
+      paymentReducer,
+    } = this.props;
+
+    dispatchSetEvent(target.value);
+    const dispatchValue = [target.value.idPasseio, clientReducer.cliente];
+    dispatchFetchPayment(dispatchValue);
+    if (!paymentReducer.success) this.setState({});
+    this.setState({ selectedPasseio: target.value, isLoading: true });
+    // this.setState({ selectedPasseio: target.value, isLoading: true }, () =>
+    //   this.fetchPagamento()
+    // );
+    this.setState({ isLoading: false });
+  };
+
   render() {
-    const { passeio, handlePasseio, selectedPasseio } = this.props;
+    // const {eventReducer} = this.props;
+    const { passeios, selectedPasseio } = this.state;
     return (
       <Grid
         container
@@ -24,11 +64,11 @@ class SelecionarPasseio extends Component {
             value={selectedPasseio || ''}
             label="Passeio: "
             name="selectedPasseio"
-            onChange={handlePasseio}
+            onChange={this.handlePasseio}
             // onBlur={() => console.log('opa')}
             // sx={{ minWidth: '50%' }}
           >
-            {passeio.map((passeio) => {
+            {passeios.map((passeio) => {
               // console.log(passeio);
               return (
                 <MenuItem value={passeio} key={nanoid()}>
@@ -44,5 +84,10 @@ class SelecionarPasseio extends Component {
     );
   }
 }
+const mapDispatchToProps = (dispatch) => ({
+  dispatchSetEvent: (value) => dispatch(setNewEvent(value)),
+  dispatchFetchPayment: (params) => dispatch(fetchPayment(params)),
+});
 
-export default SelecionarPasseio;
+const mapStateToProps = (state) => ({ ...state });
+export default connect(mapStateToProps, mapDispatchToProps)(SelecionarPasseio);

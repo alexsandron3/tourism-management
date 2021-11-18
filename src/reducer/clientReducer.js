@@ -22,7 +22,7 @@ const INITIAL_STATE = {
   clienteRedeSocial: 0,
   poltrona: '',
   isLoading: false,
-  cliente: '',
+  cliente: '2813',
 };
 
 const clientReducer = (state = INITIAL_STATE, action) => {
@@ -30,7 +30,6 @@ const clientReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case SET_NEW_CLIENT:
       return { ...payload };
-
     default:
       return state;
   }

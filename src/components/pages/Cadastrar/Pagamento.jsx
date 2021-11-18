@@ -62,7 +62,7 @@ class Pagamento extends Component {
     };
   }
   componentDidMount() {
-    this.fetchPasseios();
+    // this.fetchPasseios();
     this.fetchCliente();
   }
 
@@ -128,16 +128,15 @@ class Pagamento extends Component {
       () => this.validateForm()
     );
   };
-  // Essa é a segunda
-  handlePasseio = async ({ target }) => {
-    const { dispatchSetValue, history } = this.props;
-    dispatchSetValue(target.value);
-    console.log(this.props);
-    this.setState({ selectedPasseio: target.value, isLoading: true }, () =>
-      this.fetchPagamento()
-    );
-    this.setState({ isLoading: false });
-  };
+
+  // handlePasseio = async ({ target }) => {
+  //   const { dispatchSetValue } = this.props;
+  //   dispatchSetValue(target.value);
+  //   this.setState({ selectedPasseio: target.value, isLoading: true }, () =>
+  //     this.fetchPagamento()
+  //   );
+  //   this.setState({ isLoading: false });
+  // };
 
   fetchCliente = async () => {
     this.setState({ isLoading: true });
@@ -157,20 +156,21 @@ class Pagamento extends Component {
     // console.log(...cliente);
   };
 
-  fetchPasseios = async () => {
-    this.setState({ isLoading: true });
+  // fetchPasseios = async () => {
+  //   this.setState({ isLoading: true });
 
-    const {
-      data: { passeio = [] /* success, message */ },
-    } = await axios({
-      method: 'GET',
-      url: `http://localhost/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
-    });
-    this.setState({ passeio, isLoading: false });
-  };
+  //   const {
+  //     data: { passeio = [] /* success, message */ },
+  //   } = await axios({
+  //     method: 'GET',
+  //     url: `http://localhost/SistemaFabio-2.0/api/passeio.php?pesquisarPasseio=`,
+  //   });
+  //   this.setState({ passeio, isLoading: false });
+  // };
 
   fetchPagamento = async () => {
-    const { selectedPasseio } = this.state;
+    // const { selectedPasseio } = this.state;
+    const { eventReducer } = this.props;
     this.setState({ isLoading: true });
 
     const {
@@ -181,8 +181,9 @@ class Pagamento extends Component {
       data,
     } = await axios({
       method: 'GET',
-      url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?idPasseio=${selectedPasseio.idPasseio}&idCliente=${params.id}`,
+      url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?idPasseio=${eventReducer.idPasseio}&idCliente=${params.id}`,
     });
+    console.log(data);
 
     if (success === 1) {
       this.setState({
@@ -190,6 +191,8 @@ class Pagamento extends Component {
         isButtonDisabled: false,
         pagamento: { ...pagamento[0] },
       });
+    } else {
+      this.setState({ isButtonDisabled: false });
     }
     this.setState({ isLoading: false });
 
@@ -362,8 +365,8 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
   };
 
   render() {
-    const { activeStep, error, isButtonDisabled, paymentExists, isLoading } =
-      this.state;
+    const { activeStep, error, paymentExists, isLoading } = this.state;
+    const { paymentReducer } = this.props;
     const steps = [
       {
         label: 'Registrar Cliente',
@@ -371,7 +374,7 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
       {
         label: 'Selecionar Passeio',
         title: 'Selecione um passeio para Pagamento',
-        content: <SelecionarPasseio {...this.state} />,
+        content: <SelecionarPasseio />,
       },
       {
         label: 'Realizar Pagamento',
@@ -413,7 +416,7 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
         </Button>
         <Button
           onClick={activeStep === 2 ? this.sendData : this.handleNext}
-          disabled={isButtonDisabled}
+          disabled={paymentReducer.isButtonDisabled}
         >
           {activeStep === 2 ? 'Concluir e emitir contrato' : 'Próximo'}
         </Button>
