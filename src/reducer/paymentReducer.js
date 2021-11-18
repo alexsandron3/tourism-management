@@ -40,8 +40,8 @@ const paymentReducer = (state = INITIAL_STATE, action) => {
       return { idPasseio: payload[0], idCliente: payload[1] };
     case PAYMENT_EXISTS:
       return { ...state };
-    case ENABLE_BUTTON:
-      return { ...state, isButtonDisabled: false };
+    // case ENABLE_BUTTON:
+    //   return { ...state, isButtonDisabled: false };
     default:
       return state;
   }

@@ -16,7 +16,13 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import ConfirmationDialog from '../../partials/ConfirmationDialog';
 import { toast, ToastContainer } from 'react-toastify';
-import { setNewEvent } from '../../../actions';
+import {
+  clearEvent,
+  disableButton,
+  nextStep,
+  previousStep,
+  setNewEvent,
+} from '../../../actions';
 import { connect } from 'react-redux';
 
 class Pagamento extends Component {
@@ -366,7 +372,8 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
 
   render() {
     const { activeStep, error, paymentExists, isLoading } = this.state;
-    const { paymentReducer } = this.props;
+    const { paymentReducer, stepperReducer, handleNext, handlePrevious } =
+      this.props;
     const steps = [
       {
         label: 'Registrar Cliente',
@@ -385,16 +392,17 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
         label: 'Emitir Contrato',
       },
     ];
+    console.log(steps[stepperReducer.activeStep]);
 
     return (
-      <Content cardTitle={steps[activeStep].title}>
+      <Content cardTitle={steps[stepperReducer.activeStep].title}>
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={isLoading}
         >
           <CircularProgress color="inherit" />
         </Backdrop>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={stepperReducer.activeStep} alternativeLabel>
           {steps.map(({ label }) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
@@ -402,23 +410,27 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
           ))}
         </Stepper>
         {paymentExists && <ConfirmationDialog />}
-        {steps[activeStep].content}
+        {steps[stepperReducer.activeStep].content}
         {error && (
           <Alert severity="warning" sx={{ justifyContent: 'center' }}>
             Por favor, preencha todos os campos corretamente!
           </Alert>
         )}
         <Button
-          onClick={this.handlePrevious}
-          disabled={activeStep === 1 ? true : false}
+          onClick={() => handlePrevious()}
+          disabled={stepperReducer.activeStep === 1 ? true : false}
         >
           Anterior
         </Button>
         <Button
-          onClick={activeStep === 2 ? this.sendData : this.handleNext}
-          disabled={paymentReducer.isButtonDisabled}
+          onClick={() =>
+            stepperReducer.activeStep === 2 ? this.sendData : handleNext()
+          }
+          disabled={stepperReducer.isButtonDisabled}
         >
-          {activeStep === 2 ? 'Concluir e emitir contrato' : 'Próximo'}
+          {stepperReducer.activeStep === 2
+            ? 'Concluir e emitir contrato'
+            : 'Próximo'}
         </Button>
 
         <ToastContainer pauseOnFocusLoss newestOnTop />
@@ -429,6 +441,12 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchSetValue: (value) => dispatch(setNewEvent(value)),
+  handlePrevious: () => {
+    dispatch(previousStep());
+    dispatch(clearEvent());
+    dispatch(disableButton());
+  },
+  handleNext: () => dispatch(nextStep()),
 });
 
 const mapStateToProps = (state) => ({ ...state });
