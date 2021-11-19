@@ -20,19 +20,198 @@ import { connect } from 'react-redux';
 class FormPagamento extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pagamento: {
+        valorVendido: 0,
+        valorPago: 0,
+        novoValorPago: 0,
+        valorPendente: 0,
+        taxaPagamento: 0,
+        previsaoPagamento: null,
+        localEmbarque: ' ',
+        transporte: ' ',
+        opcionais: ' ',
+        anotacoes: ' ',
+        seguroViagem: 0,
+        clienteParceiro: 0,
+        referenciaCliente: ' ',
+        valorContrato: 0,
+        clienteDesistente: 0,
+        historicoPagamento: ' ',
+        defaultHistoricoPagamento: ' ',
+      },
+    };
   }
+  validateForm = () => {
+    const {
+      pagamento: {
+        valorVendido,
+        novoValorPago,
+        valorPago,
+        taxaPagamento,
+        localEmbarque,
+        transporte,
+        opcionais,
+      },
+      activeStep,
+    } = this.state;
+    const isValorVendidoHighestNumber =
+      valorVendido >= novoValorPago &&
+      valorVendido >= valorPago &&
+      valorVendido >= taxaPagamento;
+
+    const areAllMandatoryFilleds =
+      localEmbarque.length && transporte.length && opcionais.length;
+    if (
+      !isValorVendidoHighestNumber ||
+      (!areAllMandatoryFilleds && activeStep === 2)
+    ) {
+      this.setState({ error: true, isButtonDisabled: true });
+    } else {
+      this.setState({ error: false, isButtonDisabled: false });
+    }
+  };
+
+  handleNumbers = ({ target }) => {
+    if (/^[0-9.]*$/.test(target.value)) {
+      this.setState(
+        (prevState) => {
+          return {
+            ...prevState,
+            pagamento: {
+              ...prevState.pagamento,
+              [target.name]: target.value,
+            },
+          };
+        },
+        () => {
+          this.calculateForm(target.value);
+        }
+      );
+    }
+  };
+
+  calculateForm = () => {
+    const {
+      pagamento: { novoValorPago, taxaPagamento, valorVendido },
+    } = this.state;
+    let valorPago = [novoValorPago, taxaPagamento].reduce((acc, curr) => {
+      let novoValorPago = new BigNumber(acc);
+      let taxaPagamento = new BigNumber(curr);
+      if (isNaN(novoValorPago)) novoValorPago = 0;
+      if (isNaN(taxaPagamento)) taxaPagamento = 0;
+
+      return new BigNumber(
+        Number(novoValorPago.toFixed(2)) + Number(taxaPagamento.toFixed(2))
+      ).toFixed(2);
+    });
+    const valorPendente =
+      Number(new BigNumber(valorPago).toFixed(2)) -
+      Number(new BigNumber(valorVendido).toFixed(2));
+
+    this.setState(
+      (prevState) => {
+        return {
+          ...prevState,
+          pagamento: {
+            ...prevState.pagamento,
+            valorPago: Number(new BigNumber(valorPago).toFixed(2)),
+            valorPendente: Number(new BigNumber(valorPendente).toFixed(2)),
+          },
+        };
+      },
+      () => this.validateForm()
+    );
+  };
+
+  toFloat = ({ target }) => {
+    this.setState(
+      (prevState) => {
+        const value = new BigNumber(target.value);
+
+        return {
+          ...prevState,
+          pagamento: {
+            ...prevState.pagamento,
+            [target.name]: value.toFixed(2),
+          },
+        };
+      },
+      (prevState) => {
+        if (isNaN(Number(target.value))) {
+          return {
+            ...prevState,
+            pagamento: {
+              ...prevState.pagamento,
+              [target.name]: 0,
+            },
+          };
+        }
+      }
+    );
+  };
+
+  toInt = ({ target }) => {
+    this.setState({ [target.name]: parseInt(target.value) }, () => {
+      if (isNaN(Number(target.value))) {
+        this.setState({ [target.name]: 0 });
+      }
+    });
+  };
+
+  handleChange = ({ target }) => {
+    this.setState(
+      (prevState) => {
+        const value = target.value.toUpperCase();
+        return {
+          ...prevState,
+          pagamento: {
+            ...prevState.pagamento,
+            [target.name]: value,
+          },
+        };
+      },
+      () => this.validateForm()
+    );
+  };
+
+  setHistory = () => {
+    const {
+      pagamento: { novoValorPago, defaultHistoricoPagamento },
+    } = this.state;
+
+    this.setState((prevState) => {
+      let historicoPagamento = `${prevState.pagamento.historicoPagamento}
+${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
+      if (novoValorPago === '0' || isNaN(novoValorPago))
+        historicoPagamento = defaultHistoricoPagamento;
+      return {
+        ...prevState,
+        pagamento: {
+          ...prevState.pagamento,
+          historicoPagamento,
+        },
+      };
+    });
+  };
+
+  handleDateChange = (date) => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        pagamento: {
+          ...prevState.pagamento,
+          previsaoPagamento: moment(date).format('YYYY-MM-DD'),
+        },
+      };
+    });
+  };
+
   componentDidMount() {
-    // this.props.validateForm();
+    this.validateForm();
   }
   render() {
     const {
-      handleChange,
-      handleNumbers,
-      toFloat,
-      toInt,
-      setHistory,
-      cliente: { idadeCliente },
       pagamento: {
         valorVendido,
         valorPago,
@@ -52,9 +231,10 @@ class FormPagamento extends Component {
         referenciaCliente,
         clienteDesistente,
       },
+    } = this.state;
+    const {
+      clientReducer: { idadeCliente, nomeCliente },
       eventReducer: { nomePasseio, dataPasseio },
-      cliente: { nomeCliente },
-      handleDateChange,
     } = this.props;
     return (
       <form action="" onSubmit={this.handleSubmit}>
@@ -77,8 +257,8 @@ class FormPagamento extends Component {
               fullWidth
               name="valorVendido"
               value={valorVendido || '0'}
-              onChange={handleNumbers}
-              onBlur={toFloat}
+              onChange={this.handleNumbers}
+              onBlur={this.toFloat}
               sx={{ mb: 3 }}
               error={false}
             />
@@ -91,8 +271,8 @@ class FormPagamento extends Component {
               fullWidth
               name="valorPago"
               value={valorPago || '0'}
-              onChange={handleNumbers}
-              onBlur={toFloat}
+              onChange={this.handleNumbers}
+              onBlur={this.toFloat}
               sx={{ mb: 3 }}
               disabled
               error={false}
@@ -106,10 +286,10 @@ class FormPagamento extends Component {
               fullWidth
               name="novoValorPago"
               value={novoValorPago || '0'}
-              onChange={handleNumbers}
+              onChange={this.handleNumbers}
               onBlur={(e) => {
-                toFloat(e);
-                setHistory();
+                this.toFloat(e);
+                this.setHistory();
               }}
               sx={{ mb: 3 }}
               error={false}
@@ -123,8 +303,8 @@ class FormPagamento extends Component {
               fullWidth
               name="valorPendente"
               value={valorPendente || '0'}
-              onChange={handleNumbers}
-              onBlur={toFloat}
+              onChange={this.handleNumbers}
+              onBlur={this.toFloat}
               sx={{ mb: 3 }}
               disabled
               error={false}
@@ -138,8 +318,8 @@ class FormPagamento extends Component {
               fullWidth
               name="taxaPagamento"
               value={taxaPagamento || '0'}
-              onChange={handleNumbers}
-              onBlur={toFloat}
+              onChange={this.handleNumbers}
+              onBlur={this.toFloat}
               sx={{ mb: 3 }}
               error={false}
             />
@@ -149,7 +329,7 @@ class FormPagamento extends Component {
               <DatePicker
                 label="Previsão de pagamento: "
                 renderInput={(params) => <TextField {...params} />}
-                onChange={(e) => handleDateChange(e)}
+                onChange={(e) => this.handleDateChange(e)}
                 value={parseISO(previsaoPagamento) || ' '}
                 name="previsaoPagamento"
                 // formatDate={(date) => moment(date).format('YYYY-MM-DD')}
@@ -165,8 +345,8 @@ class FormPagamento extends Component {
               fullWidth
               name="valorContrato"
               value={valorContrato || '0'}
-              onChange={handleNumbers}
-              onBlur={toFloat}
+              onChange={this.handleNumbers}
+              onBlur={this.toFloat}
               sx={{ mb: 3 }}
               error={false}
               required
@@ -180,8 +360,8 @@ class FormPagamento extends Component {
               fullWidth
               name="numeroVagas"
               value={numeroVagas || '0'}
-              onChange={handleNumbers}
-              onBlur={toInt}
+              onChange={this.handleNumbers}
+              onBlur={this.toInt}
               sx={{ mb: 3 }}
               error={false}
               required
@@ -196,7 +376,7 @@ class FormPagamento extends Component {
               fullWidth
               name="idadeCliente"
               value={idadeCliente}
-              // onChange={this.handleChange}
+              // onChange={this.this.handleChange}
               sx={{ mb: 3 }}
               disabled
               error={false}
@@ -212,7 +392,7 @@ class FormPagamento extends Component {
               variant="standard"
               name="referenciaCliente"
               value={referenciaCliente || ' '}
-              onChange={handleChange}
+              onChange={this.handleChange}
               sx={{ mb: 3 }}
             />
           </Grid>
@@ -224,7 +404,7 @@ class FormPagamento extends Component {
               fullWidth
               name="localEmbarque"
               value={localEmbarque || ' '}
-              onChange={handleChange}
+              onChange={this.handleChange}
               sx={{ mb: 3 }}
               error={false}
               required
@@ -239,7 +419,7 @@ class FormPagamento extends Component {
               fullWidth
               name="transporte"
               value={transporte || ' '}
-              onChange={handleChange}
+              onChange={this.handleChange}
               sx={{ mb: 3 }}
               error={false}
               required
@@ -259,7 +439,7 @@ class FormPagamento extends Component {
                   control={<Radio />}
                   label="Sim"
                   onClick={(e) => {
-                    handleChange(e);
+                    this.handleChange(e);
                   }}
                 />
                 <FormControlLabel
@@ -267,7 +447,7 @@ class FormPagamento extends Component {
                   control={<Radio />}
                   label="Não"
                   onClick={(e) => {
-                    handleChange(e);
+                    this.handleChange(e);
                   }}
                 />
               </RadioGroup>
@@ -290,7 +470,7 @@ class FormPagamento extends Component {
                   control={<Radio />}
                   label="Sim"
                   onClick={(e) => {
-                    handleChange(e);
+                    this.handleChange(e);
                   }}
                 />
                 <FormControlLabel
@@ -298,7 +478,7 @@ class FormPagamento extends Component {
                   control={<Radio />}
                   label="Não"
                   onClick={(e) => {
-                    handleChange(e);
+                    this.handleChange(e);
                   }}
                 />
               </RadioGroup>
@@ -313,7 +493,7 @@ class FormPagamento extends Component {
               variant="standard"
               name="opcionais"
               value={opcionais || ' '}
-              onChange={handleChange}
+              onChange={this.handleChange}
               sx={{ mb: 3 }}
               required
             />
@@ -327,7 +507,7 @@ class FormPagamento extends Component {
               variant="standard"
               name="anotacoes"
               value={anotacoes || ' '}
-              onChange={handleChange}
+              onChange={this.handleChange}
               sx={{ mb: 3 }}
             />
           </Grid>
@@ -340,7 +520,7 @@ class FormPagamento extends Component {
               variant="standard"
               name="historicoPagamento"
               value={historicoPagamento || ' '}
-              onChange={handleChange}
+              onChange={this.handleChange}
               sx={{ mb: 3 }}
             />
           </Grid>

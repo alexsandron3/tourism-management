@@ -38,16 +38,11 @@ class SelecionarPasseio extends Component {
     dispatchSetEvent(target.value);
     const dispatchValue = [target.value.idPasseio, clientReducer.cliente];
     dispatchFetchPayment(dispatchValue);
-    // if (!paymentReducer.success) this.setState({});
     this.setState({ selectedPasseio: target.value, isLoading: true });
-    // this.setState({ selectedPasseio: target.value, isLoading: true }, () =>
-    //   this.fetchPagamento()
-    // );
     this.setState({ isLoading: false });
   };
 
   render() {
-    // const {eventReducer} = this.props;
     const { passeios, selectedPasseio } = this.state;
     return (
       <Grid
