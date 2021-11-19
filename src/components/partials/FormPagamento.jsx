@@ -17,7 +17,7 @@ import moment from 'moment';
 import { parseISO } from 'date-fns';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
-import { setPaymentInfo } from '../../actions';
+import { disableButton, enableButton, setPaymentInfo } from '../../actions';
 class FormPagamento extends Component {
   constructor(props) {
     super(props);
@@ -44,7 +44,8 @@ class FormPagamento extends Component {
     };
   }
   validateForm = () => {
-    const { dispatchPaymentInfo } = this.props;
+    const { dispatchPaymentInfo, dispatchDisableButton, dispatchEnableButton } =
+      this.props;
     const {
       pagamento: {
         valorVendido,
@@ -65,12 +66,15 @@ class FormPagamento extends Component {
 
     const areAllMandatoryFilleds =
       localEmbarque.length && transporte.length && opcionais.length;
+    console.log(pagamento);
     if (
       !isValorVendidoHighestNumber ||
       (!areAllMandatoryFilleds && activeStep === 2)
     ) {
+      dispatchDisableButton();
       this.setState({ error: true, isButtonDisabled: true });
     } else {
+      dispatchEnableButton();
       this.setState({ error: false, isButtonDisabled: false });
       dispatchPaymentInfo(pagamento);
     }
@@ -439,7 +443,7 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
                 aria-label="seguroViagem"
                 defaultValue="ativo"
                 name="seguroViagem"
-                value={seguroViagem || '0'}
+                value={seguroViagem || 0}
               >
                 <FormControlLabel
                   value={1}
@@ -538,6 +542,8 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
 }
 const mapDispatchToProps = (dispatch) => ({
   dispatchPaymentInfo: (state) => dispatch(setPaymentInfo(state)),
+  dispatchDisableButton: (state) => dispatch(disableButton(state)),
+  dispatchEnableButton: (state) => dispatch(enableButton(state)),
 });
 const mapStateToProps = (state) => ({ ...state });
 

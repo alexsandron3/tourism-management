@@ -17,6 +17,7 @@ export const sendPayment = async (info) => {
     url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?`,
     data: { ...info },
   });
+  console.log(info);
   return {
     data,
   };

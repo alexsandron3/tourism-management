@@ -37,54 +37,54 @@ class Pagamento extends Component {
     };
   }
   componentDidMount() {
-    this.fetchCliente();
+    // this.fetchCliente();
   }
 
-  fetchCliente = async () => {
-    this.setState({ isLoading: true });
-    const {
-      match: { params },
-    } = this.props;
-    const {
-      data: { cliente = [], success },
-    } = await axios({
-      method: 'GET',
-      url: `http://localhost/SistemaFabio-2.0/api/cliente.php?id=${params.id}`,
-    });
-    this.setState({ isLoading: false });
-    if (success) {
-      this.setState({ cliente: cliente[0] });
-    }
-    // console.log(...cliente);
-  };
+  // fetchCliente = async () => {
+  //   this.setState({ isLoading: true });
+  //   const {
+  //     match: { params },
+  //   } = this.props;
+  //   const {
+  //     data: { cliente = [], success },
+  //   } = await axios({
+  //     method: 'GET',
+  //     url: `http://localhost/SistemaFabio-2.0/api/cliente.php?id=${params.id}`,
+  //   });
+  //   this.setState({ isLoading: false });
+  //   if (success) {
+  //     this.setState({ cliente: cliente[0] });
+  //   }
+  //   // console.log(...cliente);
+  // };
 
-  fetchPagamento = async () => {
-    const { eventReducer } = this.props;
-    this.setState({ isLoading: true });
+  // fetchPagamento = async () => {
+  //   const { eventReducer } = this.props;
+  //   this.setState({ isLoading: true });
 
-    const {
-      match: { params },
-    } = this.props;
-    const {
-      data: { success, pagamento },
-      data,
-    } = await axios({
-      method: 'GET',
-      url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?idPasseio=${eventReducer.idPasseio}&idCliente=${params.id}`,
-    });
-    console.log(data);
+  //   const {
+  //     match: { params },
+  //   } = this.props;
+  //   const {
+  //     data: { success, pagamento },
+  //     data,
+  //   } = await axios({
+  //     method: 'GET',
+  //     url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?idPasseio=${eventReducer.idPasseio}&idCliente=${params.id}`,
+  //   });
+  //   console.log(data);
 
-    if (success === 1) {
-      this.setState({
-        paymentExists: true,
-        isButtonDisabled: false,
-        pagamento: { ...pagamento[0] },
-      });
-    } else {
-      this.setState({ isButtonDisabled: false });
-    }
-    this.setState({ isLoading: false });
-  };
+  //   if (success === 1) {
+  //     this.setState({
+  //       paymentExists: true,
+  //       isButtonDisabled: false,
+  //       pagamento: { ...pagamento[0] },
+  //     });
+  //   } else {
+  //     this.setState({ isButtonDisabled: false });
+  //   }
+  //   this.setState({ isLoading: false });
+  // };
 
   sendData = () => {
     const {
@@ -104,7 +104,6 @@ class Pagamento extends Component {
         ...pagamento
       }) => pagamento
     );
-    // console.log(this.props);
     dispatchNewPayment({
       ...filteredState[0],
       idPasseio: eventReducer.idPasseio,

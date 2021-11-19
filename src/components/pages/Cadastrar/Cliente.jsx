@@ -232,8 +232,7 @@ class Cliente extends Component {
     } = this.state;
     const { id } = this.props.match.params;
     const { stepperReducer } = this.props;
-    if (cliente)
-      return <Redirect push to={`/cadastrar/pagamento/${cliente}`} />;
+    if (cliente) return <Redirect push to={`/cadastrar/pagamento`} />;
     return (
       <Content cardTitle={id ? 'Editar Cliente' : 'Cadastrar Cliente'}>
         <Stepper activeStep={0} alternativeLabel>
@@ -550,11 +549,6 @@ class Cliente extends Component {
           <Button type="submit" sx={{ marginLeft: 3 }} variant="outlined">
             Próximo
           </Button>
-          {/* <Link to="/cadastrar/pagamento" target="_blank">
-            <Button sx={{ marginLeft: 3 }} variant="contained">
-              Próximo
-            </Button>
-          </Link> */}
         </form>
         <ToastContainer pauseOnFocusLoss />
       </Content>

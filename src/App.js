@@ -9,19 +9,22 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 function App() {
   return (
     <>
-    <BrowserRouter>
-      <Appbar />
-      <Switch> 
-        <Route path="/pesquisar/cliente" component={Cliente} />
-        <Route path="/pesquisar/passeio" component={Passeio} />
-        <Route path="/cadastrar/pagamento/:id?" component={CadPagamento} />
-        <Route path="/cadastrar/cliente/:id?" component={CadCliente} />
-        <Route path="/editar/cliente/:id?" component={CadCliente} />
-        <Route path="/cadastrar/passeio/:id?" component={CadPasseio} />
-        <Route path="/editar/passeio/:id?" component={CadPasseio} />
-        <Route path="/" component={Index} />
-      </Switch>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Appbar />
+        <Switch>
+          {/* Pesquisar */}
+          <Route path="/pesquisar/cliente" component={Cliente} />
+          <Route path="/pesquisar/passeio" component={Passeio} />
+
+          {/* Cadastrar e Editar */}
+          <Route path="/cadastrar/pagamento/:id?" component={CadPagamento} />
+          <Route path="/cadastrar/cliente/:id?" component={CadCliente} />
+          <Route path="/editar/cliente/:id?" component={CadCliente} />
+          <Route path="/cadastrar/passeio/:id?" component={CadPasseio} />
+          <Route path="/editar/passeio/:id?" component={CadPasseio} />
+          <Route path="/" component={Index} />
+        </Switch>
+      </BrowserRouter>
     </>
   );
 }
