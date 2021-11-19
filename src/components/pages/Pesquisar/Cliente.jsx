@@ -127,6 +127,7 @@ class Cliente extends Component {
   componentDidMount() {
     this.fetchUser();
   }
+
   fetchUser = async () => {
     const { pesquisarCliente } = this.state;
     this.setState({ isLoading: true });
@@ -151,12 +152,15 @@ class Cliente extends Component {
       console.error(error);
     }
   };
+
   handleChange = ({ target }) => {
     this.setState({ pesquisarCliente: target.value });
   };
+
   handleClick = (target) => {
     console.log(target.currentTarget);
   };
+
   render() {
     const { pesquisarCliente, row, isLoading } = this.state;
     const columns = [

@@ -156,6 +156,8 @@ class Pagamento extends Component {
         <Button
           onClick={() => handlePrevious()}
           disabled={stepperReducer.activeStep === 1 ? true : false}
+          variant="outlined"
+          sx={{ mr: '5px' }}
         >
           Anterior
         </Button>
@@ -164,6 +166,7 @@ class Pagamento extends Component {
             stepperReducer.activeStep === 2 ? this.sendData() : handleNext()
           }
           disabled={stepperReducer.isButtonDisabled}
+          variant="outlined"
         >
           {stepperReducer.activeStep === 2
             ? 'Concluir e emitir contrato'

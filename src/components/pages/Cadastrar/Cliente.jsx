@@ -64,7 +64,6 @@ class Cliente extends Component {
   }
   componentDidMount() {
     this.fetchCliente();
-    // console.log(this.props);
   }
 
   handleChange = ({ target }) => {
@@ -548,8 +547,8 @@ class Cliente extends Component {
               </FormControl>
             </Grid>
           </Grid>
-          <Button type="submit" sx={{ marginLeft: 3 }} variant="contained">
-            Enviar
+          <Button type="submit" sx={{ marginLeft: 3 }} variant="outlined">
+            Próximo
           </Button>
           {/* <Link to="/cadastrar/pagamento" target="_blank">
             <Button sx={{ marginLeft: 3 }} variant="contained">
