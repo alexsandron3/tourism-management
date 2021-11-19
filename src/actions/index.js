@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { fetchPagamento, sendPayment } from '../services/pagamento';
 // Events
 export const NEW_EVENT = 'NEW_EVENT';
@@ -30,21 +31,37 @@ export const setPaymentInfo = (payload) => ({
   type: SET_PAYMENT_INFO,
   payload,
 });
+export const setNewPayment = (payload) => ({
+  type: NEW_PAYMENT,
+  payload,
+});
 
 export const newPayment = (payload) => async (dispatch) => {
   try {
-    const { data } = await sendPayment(...payload);
-    console.log(data);
-    dispatch(setPaymentInfo());
-  } catch (error) {}
+    const {
+      data,
+      data: { success, message },
+    } = await sendPayment(payload);
+    dispatch(setNewPayment(data));
+    if (success === 1) {
+      toast.success(message, {
+        pauseOnFocusLoss: true,
+      });
+    } else {
+      toast.error(message, {
+        pauseOnFocusLoss: true,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // export const fetchPayment = (payload) => ({ type: FETCH_PAYMENT, payload });
 export const fetchPayment = (payload) => async (dispatch) => {
   try {
     const {
-      data: { success, pagamento },
-      data,
+      data: { success },
     } = await fetchPagamento(...payload);
     if (success === 1) {
       console.log('object');

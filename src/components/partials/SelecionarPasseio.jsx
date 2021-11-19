@@ -27,13 +27,8 @@ class SelecionarPasseio extends Component {
   };
 
   handlePasseio = ({ target }) => {
-    const {
-      dispatchSetEvent,
-      dispatchFetchPayment,
-      eventReducer,
-      clientReducer,
-      paymentReducer,
-    } = this.props;
+    const { dispatchSetEvent, dispatchFetchPayment, clientReducer } =
+      this.props;
 
     dispatchSetEvent(target.value);
     const dispatchValue = [target.value.idPasseio, clientReducer.cliente];

@@ -9,13 +9,9 @@ import {
 } from '@mui/material';
 import React, { Component } from 'react';
 import Content from '../../partials/Content';
-import SelecionarPasseio from '../../partials/SelecionarPasseio';
-import FormPagamento from '../../partials/FormPagamento';
 import axios from 'axios';
-import { BigNumber } from 'bignumber.js';
-import moment from 'moment';
 import ConfirmationDialog from '../../partials/ConfirmationDialog';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import {
   clearEvent,
   disableButton,
@@ -97,15 +93,6 @@ class Pagamento extends Component {
       eventReducer,
       clientReducer,
     } = this.props;
-    // console.log(paymentReducer);
-
-    // this.setState({ isLoading: true });
-
-    // const {
-    //   selectedPasseio: { idPasseio },
-    //   cliente: { idCliente, idadeCliente },
-    //   pagamento,
-    // } = this.state;
     const filteredState = pagamento.map(
       ({
         novoValorPago,
@@ -117,32 +104,14 @@ class Pagamento extends Component {
         ...pagamento
       }) => pagamento
     );
-    console.log(this.props);
+    // console.log(this.props);
     dispatchNewPayment({
       ...filteredState[0],
       idPasseio: eventReducer.idPasseio,
       idCliente: clientReducer.idCliente,
+      idadeCliente: clientReducer.idadeCliente,
     });
-    // console.log({
-    //   ...filteredState[0],
-    //   idPasseio: eventReducer.idPasseio,
-    //   idCliente: clientReducer.idCliente,
-    // });
-    // if (Object.keys(pagamento).some((key) => key === 'idPagamento'))
-    //   alert('opa!!');
-    // const {
-    //   data: { success, message, left },
-    //   data,
-    // } = await axios({
-    //   method: 'POST',
-    //   url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?`,
-    //   data: { ...filteredState[0], idCliente, idPasseio, idadeCliente },
-    // });
-    // console.log(data);
-    // if (success) {
-    //   toast.success(message, {
-    //     pauseOnFocusLoss: true,
-    //   });
+
     //   setTimeout(() => {
     //     toast.info(left, {
     //       pauseOnFocusLoss: true,
@@ -153,18 +122,12 @@ class Pagamento extends Component {
     //       `http://localhost/SistemaFabio-2.0/contrato.php?id=${idCliente}`
     //     );
     //   }, 300);
-    // } else {
-    //   toast.error(message, {
-    //     pauseOnFocusLoss: true,
-    //   });
     // }
-    // this.setState({ isLoading: false });
   };
 
   render() {
-    const { activeStep, error, paymentExists, isLoading } = this.state;
-    const { paymentReducer, stepperReducer, handleNext, handlePrevious } =
-      this.props;
+    const { error, paymentExists, isLoading } = this.state;
+    const { stepperReducer, handleNext, handlePrevious } = this.props;
 
     return (
       <Content

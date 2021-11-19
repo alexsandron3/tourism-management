@@ -1,5 +1,4 @@
 import {
-  ENABLE_BUTTON,
   FETCH_PAYMENT,
   NEW_PAYMENT,
   PAYMENT_EXISTS,
@@ -34,6 +33,7 @@ const INITIAL_STATE = {
 
 const paymentReducer = (state = INITIAL_STATE, action) => {
   const { payload } = action;
+  console.log(action);
   switch (action.type) {
     case SET_PAYMENT_INFO:
       return { ...state, pagamento: [payload] };
@@ -41,6 +41,8 @@ const paymentReducer = (state = INITIAL_STATE, action) => {
       return { idPasseio: payload[0], idCliente: payload[1] };
     case PAYMENT_EXISTS:
       return { ...state };
+    case NEW_PAYMENT:
+      return { ...state, success: payload.success, message: payload.message };
     default:
       return state;
   }

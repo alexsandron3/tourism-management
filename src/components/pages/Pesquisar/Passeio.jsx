@@ -7,8 +7,6 @@ import axios from 'axios';
 import { Button, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DescriptionIcon from '@mui/icons-material/Description';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import GroupsIcon from '@mui/icons-material/Groups';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';

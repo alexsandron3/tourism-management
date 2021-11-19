@@ -212,7 +212,10 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
   };
 
   componentDidMount() {
+    const { dispatchPaymentInfo } = this.props;
+    const { pagamento } = this.state;
     this.validateForm();
+    dispatchPaymentInfo(pagamento);
   }
 
   render() {
@@ -234,7 +237,6 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
         seguroViagem,
         historicoPagamento,
         referenciaCliente,
-        clienteDesistente,
       },
     } = this.state;
     const {
