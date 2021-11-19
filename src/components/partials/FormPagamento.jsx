@@ -17,6 +17,7 @@ import moment from 'moment';
 import { parseISO } from 'date-fns';
 import BigNumber from 'bignumber.js';
 import { connect } from 'react-redux';
+import { setPaymentInfo } from '../../actions';
 class FormPagamento extends Component {
   constructor(props) {
     super(props);
@@ -43,6 +44,7 @@ class FormPagamento extends Component {
     };
   }
   validateForm = () => {
+    const { dispatchPaymentInfo } = this.props;
     const {
       pagamento: {
         valorVendido,
@@ -53,6 +55,7 @@ class FormPagamento extends Component {
         transporte,
         opcionais,
       },
+      pagamento,
       activeStep,
     } = this.state;
     const isValorVendidoHighestNumber =
@@ -69,6 +72,7 @@ class FormPagamento extends Component {
       this.setState({ error: true, isButtonDisabled: true });
     } else {
       this.setState({ error: false, isButtonDisabled: false });
+      dispatchPaymentInfo(pagamento);
     }
   };
 
@@ -210,6 +214,7 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
   componentDidMount() {
     this.validateForm();
   }
+
   render() {
     const {
       pagamento: {
@@ -237,7 +242,7 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
       eventReducer: { nomePasseio, dataPasseio },
     } = this.props;
     return (
-      <form action="" onSubmit={this.handleSubmit}>
+      <form action="" id="form-send" onSubmit={this.handleSubmit}>
         <Alert
           icon={false}
           severity="info"
@@ -529,7 +534,9 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
     );
   }
 }
-
+const mapDispatchToProps = (dispatch) => ({
+  dispatchPaymentInfo: (state) => dispatch(setPaymentInfo(state)),
+});
 const mapStateToProps = (state) => ({ ...state });
 
-export default connect(mapStateToProps)(FormPagamento);
+export default connect(mapStateToProps, mapDispatchToProps)(FormPagamento);

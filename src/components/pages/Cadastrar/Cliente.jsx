@@ -65,7 +65,7 @@ class Cliente extends Component {
   }
   componentDidMount() {
     this.fetchCliente();
-    console.log(this.props);
+    // console.log(this.props);
   }
 
   handleChange = ({ target }) => {
@@ -168,7 +168,7 @@ class Cliente extends Component {
       toast.success(message, {
         pauseOnFocusLoss: false,
       });
-      const dispatchValue = { ...filteredState[0], cliente: data.cliente };
+      const dispatchValue = { ...filteredState[0], idCliente: data.cliente };
       dispatchSetValue(dispatchValue);
 
       setTimeout(() => {

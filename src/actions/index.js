@@ -1,4 +1,4 @@
-import { fetchPagamento } from '../services/pagamento';
+import { fetchPagamento, sendPayment } from '../services/pagamento';
 // Events
 export const NEW_EVENT = 'NEW_EVENT';
 export const SET_NEW_EVENT = 'SET_NEW_EVENT';
@@ -24,8 +24,21 @@ export const NEW_PAYMENT = 'NEW_PAYMENT';
 export const FETCH_SUCCESS = 'FETCH_SUCCESS';
 export const FETCH_FAIL = 'FETCH_FAIL';
 export const PAYMENT_EXISTS = 'PAYMENT_EXISTS';
-export const setNewPayment = (payload) => ({ type: NEW_PAYMENT, payload });
 export const FETCH_PAYMENT = 'FETCH_PAYMENT';
+export const SET_PAYMENT_INFO = 'SET_PAYMENT_INFO';
+export const setPaymentInfo = (payload) => ({
+  type: SET_PAYMENT_INFO,
+  payload,
+});
+
+export const newPayment = (payload) => async (dispatch) => {
+  try {
+    const { data } = await sendPayment(...payload);
+    console.log(data);
+    dispatch(setPaymentInfo());
+  } catch (error) {}
+};
+
 // export const fetchPayment = (payload) => ({ type: FETCH_PAYMENT, payload });
 export const fetchPayment = (payload) => async (dispatch) => {
   try {

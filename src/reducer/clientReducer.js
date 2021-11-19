@@ -22,7 +22,7 @@ const INITIAL_STATE = {
   clienteRedeSocial: 0,
   poltrona: '',
   isLoading: false,
-  cliente: '2813',
+  idCliente: '2813',
 };
 
 const clientReducer = (state = INITIAL_STATE, action) => {

@@ -19,6 +19,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import {
   clearEvent,
   disableButton,
+  newPayment,
   nextStep,
   previousStep,
   setNewEvent,
@@ -89,15 +90,23 @@ class Pagamento extends Component {
     this.setState({ isLoading: false });
   };
 
-  sendData = async () => {
-    this.setState({ isLoading: true });
-
+  sendData = () => {
     const {
-      selectedPasseio: { idPasseio },
-      cliente: { idCliente, idadeCliente },
-      pagamento,
-    } = this.state;
-    const filteredState = [pagamento].map(
+      paymentReducer: { pagamento },
+      dispatchNewPayment,
+      eventReducer,
+      clientReducer,
+    } = this.props;
+    // console.log(paymentReducer);
+
+    // this.setState({ isLoading: true });
+
+    // const {
+    //   selectedPasseio: { idPasseio },
+    //   cliente: { idCliente, idadeCliente },
+    //   pagamento,
+    // } = this.state;
+    const filteredState = pagamento.map(
       ({
         novoValorPago,
         defaultHistoricoPagamento,
@@ -108,44 +117,54 @@ class Pagamento extends Component {
         ...pagamento
       }) => pagamento
     );
-    if (Object.keys(pagamento).some((key) => key === 'idPagamento'))
-      alert('opa!!');
-    const {
-      data: { success, message, left },
-      data,
-    } = await axios({
-      method: 'POST',
-      url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?`,
-      data: { ...filteredState[0], idCliente, idPasseio, idadeCliente },
+    console.log(this.props);
+    dispatchNewPayment({
+      ...filteredState[0],
+      idPasseio: eventReducer.idPasseio,
+      idCliente: clientReducer.idCliente,
     });
-    console.log(data);
-    if (success) {
-      toast.success(message, {
-        pauseOnFocusLoss: true,
-      });
-      setTimeout(() => {
-        toast.info(left, {
-          pauseOnFocusLoss: true,
-        });
-      }, 300);
-      setTimeout(() => {
-        window.open(
-          `http://localhost/SistemaFabio-2.0/contrato.php?id=${idCliente}`
-        );
-      }, 300);
-    } else {
-      toast.error(message, {
-        pauseOnFocusLoss: true,
-      });
-    }
-    this.setState({ isLoading: false });
+    // console.log({
+    //   ...filteredState[0],
+    //   idPasseio: eventReducer.idPasseio,
+    //   idCliente: clientReducer.idCliente,
+    // });
+    // if (Object.keys(pagamento).some((key) => key === 'idPagamento'))
+    //   alert('opa!!');
+    // const {
+    //   data: { success, message, left },
+    //   data,
+    // } = await axios({
+    //   method: 'POST',
+    //   url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?`,
+    //   data: { ...filteredState[0], idCliente, idPasseio, idadeCliente },
+    // });
+    // console.log(data);
+    // if (success) {
+    //   toast.success(message, {
+    //     pauseOnFocusLoss: true,
+    //   });
+    //   setTimeout(() => {
+    //     toast.info(left, {
+    //       pauseOnFocusLoss: true,
+    //     });
+    //   }, 300);
+    //   setTimeout(() => {
+    //     window.open(
+    //       `http://localhost/SistemaFabio-2.0/contrato.php?id=${idCliente}`
+    //     );
+    //   }, 300);
+    // } else {
+    //   toast.error(message, {
+    //     pauseOnFocusLoss: true,
+    //   });
+    // }
+    // this.setState({ isLoading: false });
   };
 
   render() {
     const { activeStep, error, paymentExists, isLoading } = this.state;
     const { paymentReducer, stepperReducer, handleNext, handlePrevious } =
       this.props;
-    console.log(stepperReducer.steps[stepperReducer.activeStep]);
 
     return (
       <Content
@@ -179,7 +198,7 @@ class Pagamento extends Component {
         </Button>
         <Button
           onClick={() =>
-            stepperReducer.activeStep === 2 ? this.sendData : handleNext()
+            stepperReducer.activeStep === 2 ? this.sendData() : handleNext()
           }
           disabled={stepperReducer.isButtonDisabled}
         >
@@ -202,6 +221,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(disableButton());
   },
   handleNext: () => dispatch(nextStep()),
+  dispatchNewPayment: (value) => dispatch(newPayment(value)),
 });
 
 const mapStateToProps = (state) => ({ ...state });
