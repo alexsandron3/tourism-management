@@ -23,8 +23,7 @@ import {
   Stepper,
   StepLabel,
 } from '@mui/material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { parseISO } from 'date-fns';
 
 import axios from 'axios';
@@ -121,7 +120,7 @@ class Cliente extends Component {
         if (isNaN(Number(target.value))) {
           this.setState({ [target.name]: 0 });
         }
-      }
+      },
     );
   };
 
@@ -151,7 +150,7 @@ class Cliente extends Component {
     const state = [];
     state.push(this.state);
     const filteredState = state.map(
-      ({ isLoading, modified, created, cliente, ...rest }) => rest
+      ({ isLoading, modified, created, cliente, ...rest }) => rest,
     );
     const {
       data: { success, message, cliente },
@@ -169,9 +168,7 @@ class Cliente extends Component {
       const dispatchValue = { ...filteredState[0], idCliente: data.cliente };
       dispatchSetValue(dispatchValue);
 
-      setTimeout(() => {
-        this.setState({ cliente });
-      }, 3000);
+      this.setState({ cliente });
     } else {
       toast.error(message, {
         pauseOnFocusLoss: false,
@@ -197,7 +194,7 @@ class Cliente extends Component {
       const {
         data: { cliente },
       } = await axios.get(
-        `http://localhost/SistemaFabio-2.0/api/cliente.php?id=${id}`
+        `http://localhost/SistemaFabio-2.0/api/cliente.php?id=${id}`,
       );
       this.setState({ ...cliente[0], isLoading: false });
     } else {
@@ -550,7 +547,6 @@ class Cliente extends Component {
             Próximo
           </Button>
         </form>
-        <ToastContainer pauseOnFocusLoss />
       </Content>
     );
   }

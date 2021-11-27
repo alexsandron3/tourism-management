@@ -11,8 +11,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 const col = ['ID', 'Nome', 'Data do passeio', 'Local do passeio', 'Vagas'];
 class Passeio extends Component {
   constructor() {
@@ -209,7 +208,6 @@ class Passeio extends Component {
           col={col}
           isLoading={isLoading}
         />
-        <ToastContainer pauseOnFocusLoss />
       </Content>
     );
   }

@@ -27,12 +27,18 @@ export const FETCH_FAIL = 'FETCH_FAIL';
 export const PAYMENT_EXISTS = 'PAYMENT_EXISTS';
 export const FETCH_PAYMENT = 'FETCH_PAYMENT';
 export const SET_PAYMENT_INFO = 'SET_PAYMENT_INFO';
+export const EDIT_PAYMENT = 'EDIT_PAYMENT';
+
 export const setPaymentInfo = (payload) => ({
   type: SET_PAYMENT_INFO,
   payload,
 });
 export const setNewPayment = (payload) => ({
   type: NEW_PAYMENT,
+  payload,
+});
+export const editPayment = (payload) => ({
+  type: EDIT_PAYMENT,
   payload,
 });
 
@@ -56,16 +62,19 @@ export const newPayment = (payload) => async (dispatch) => {
     console.error(error);
   }
 };
-
+// asas
 // export const fetchPayment = (payload) => ({ type: FETCH_PAYMENT, payload });
 export const fetchPayment = (payload) => async (dispatch) => {
   try {
     const {
-      data: { success },
+      data: { success, pagamento },
     } = await fetchPagamento(...payload);
+    console.log(success);
     if (success === 1) {
+      dispatch(editPayment( [pagamento, success]));
       console.log('object');
     } else {
+      // dispatch(editPayment({ success }));
       dispatch(enableButton());
     }
   } catch (error) {}

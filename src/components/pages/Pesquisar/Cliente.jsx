@@ -10,8 +10,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import { Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 // const columns = [
 //   {
@@ -321,7 +320,6 @@ class Cliente extends Component {
           col={col}
           isLoading={isLoading}
         />
-        <ToastContainer pauseOnFocusLoss />
       </Content>
     );
   }

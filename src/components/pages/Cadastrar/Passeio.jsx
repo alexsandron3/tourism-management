@@ -13,8 +13,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { Backdrop, Button, CircularProgress } from '@mui/material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { parseISO } from 'date-fns';
 
 import axios from 'axios';
@@ -59,7 +58,7 @@ class Passeio extends Component {
         if (isNaN(Number(target.value))) {
           this.setState({ [target.name]: 0 });
         }
-      }
+      },
     );
   };
 
@@ -126,7 +125,7 @@ class Passeio extends Component {
       const {
         data: { passeio },
       } = await axios.get(
-        `http://localhost/SistemaFabio-2.0/api/passeio.php?id=${id}`
+        `http://localhost/SistemaFabio-2.0/api/passeio.php?id=${id}`,
       );
       this.setState({ ...passeio[0], isLoading: false });
     } else {
@@ -321,7 +320,6 @@ class Passeio extends Component {
             Enviar
           </Button>
         </form>
-        <ToastContainer pauseOnFocusLoss />
       </Content>
     );
   }

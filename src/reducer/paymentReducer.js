@@ -3,6 +3,7 @@ import {
   NEW_PAYMENT,
   PAYMENT_EXISTS,
   SET_PAYMENT_INFO,
+  EDIT_PAYMENT,
 } from '../actions';
 const INITIAL_STATE = {
   success: 0,
@@ -28,12 +29,10 @@ const INITIAL_STATE = {
       defaultHistoricoPagamento: ' ',
     },
   ],
-  isButtonDisabled: true,
 };
 
 const paymentReducer = (state = INITIAL_STATE, action) => {
   const { payload } = action;
-  console.log(action);
   switch (action.type) {
     case SET_PAYMENT_INFO:
       return { ...state, pagamento: [payload] };
@@ -43,6 +42,8 @@ const paymentReducer = (state = INITIAL_STATE, action) => {
       return { ...state };
     case NEW_PAYMENT:
       return { ...state, success: payload.success, message: payload.message };
+    case EDIT_PAYMENT:
+      return { ...state, pagamento: payload[0], showDialog: payload[1] };
     default:
       return state;
   }

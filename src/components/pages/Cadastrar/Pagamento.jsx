@@ -9,9 +9,7 @@ import {
 } from '@mui/material';
 import React, { Component } from 'react';
 import Content from '../../partials/Content';
-import axios from 'axios';
 import ConfirmationDialog from '../../partials/ConfirmationDialog';
-import { ToastContainer } from 'react-toastify';
 import {
   clearEvent,
   disableButton,
@@ -102,7 +100,7 @@ class Pagamento extends Component {
         dataPagamento,
         lastModified,
         ...pagamento
-      }) => pagamento
+      }) => pagamento,
     );
     dispatchNewPayment({
       ...filteredState[0],
@@ -171,8 +169,6 @@ class Pagamento extends Component {
             ? 'Concluir e emitir contrato'
             : 'Próximo'}
         </Button>
-
-        <ToastContainer pauseOnFocusLoss newestOnTop />
       </Content>
     );
   }

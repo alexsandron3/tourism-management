@@ -6,6 +6,9 @@ import CadPasseio from './components/pages/Cadastrar/Passeio';
 import CadCliente from './components/pages/Cadastrar/Cliente';
 import CadPagamento from './components/pages/Cadastrar/Pagamento';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   return (
     <>
@@ -24,6 +27,7 @@ function App() {
           <Route path="/editar/passeio/:id?" component={CadPasseio} />
           <Route path="/" component={Index} />
         </Switch>
+        <ToastContainer pauseOnFocusLoss />
       </BrowserRouter>
     </>
   );

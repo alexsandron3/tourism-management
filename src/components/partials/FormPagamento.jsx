@@ -43,6 +43,15 @@ class FormPagamento extends Component {
       },
     };
   }
+
+  componentDidMount() {
+    const { dispatchPaymentInfo, paymentReducer } = this.props;
+    const { pagamento } = this.state;
+    this.validateForm();
+    console.log(paymentReducer);
+    dispatchPaymentInfo(pagamento);
+  }
+
   validateForm = () => {
     const { dispatchPaymentInfo, dispatchDisableButton, dispatchEnableButton } =
       this.props;
@@ -94,7 +103,7 @@ class FormPagamento extends Component {
         },
         () => {
           this.calculateForm(target.value);
-        }
+        },
       );
     }
   };
@@ -110,7 +119,7 @@ class FormPagamento extends Component {
       if (isNaN(taxaPagamento)) taxaPagamento = 0;
 
       return new BigNumber(
-        Number(novoValorPago.toFixed(2)) + Number(taxaPagamento.toFixed(2))
+        Number(novoValorPago.toFixed(2)) + Number(taxaPagamento.toFixed(2)),
       ).toFixed(2);
     });
     const valorPendente =
@@ -128,7 +137,7 @@ class FormPagamento extends Component {
           },
         };
       },
-      () => this.validateForm()
+      () => this.validateForm(),
     );
   };
 
@@ -155,7 +164,7 @@ class FormPagamento extends Component {
             },
           };
         }
-      }
+      },
     );
   };
 
@@ -179,7 +188,7 @@ class FormPagamento extends Component {
           },
         };
       },
-      () => this.validateForm()
+      () => this.validateForm(),
     );
   };
 
@@ -215,13 +224,6 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
     });
   };
 
-  componentDidMount() {
-    const { dispatchPaymentInfo } = this.props;
-    const { pagamento } = this.state;
-    this.validateForm();
-    dispatchPaymentInfo(pagamento);
-  }
-
   render() {
     const {
       pagamento: {
@@ -256,7 +258,7 @@ ${moment().format('DD-MM-YYY')} R$: ${novoValorPago}`;
         >
           <Typography variant="h5">{`Cliente: ${nomeCliente}`}</Typography>
           <Typography variant="h5">{`Passeio: ${nomePasseio} EM ${moment(
-            dataPasseio
+            dataPasseio,
           ).format('DD/MM/YYYY')}`}</Typography>
         </Alert>
         <Grid container justifyContent="space-between" p={3}>

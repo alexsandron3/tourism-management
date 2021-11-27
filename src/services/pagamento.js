@@ -5,6 +5,9 @@ export const fetchPagamento = async (idPasseio, idCliente) => {
     method: 'GET',
     url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?idPasseio=${idPasseio}&idCliente=${idCliente}`,
   });
+  console.log(
+    `http://localhost/SistemaFabio-2.0/api/pagamento.php?idPasseio=${idPasseio}&idCliente=${idCliente}`,
+  );
 
   return {
     data,

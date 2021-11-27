@@ -7,8 +7,7 @@ import 'date-fns';
 import moment from 'moment';
 import axios from 'axios';
 import 'jspdf-autotable';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const columns = [
   {
@@ -144,9 +143,9 @@ export default class Index extends Component {
       const answer = await axios({
         method: 'GET',
         url: `http://localhost/SistemaFabio-2.0/api/pagamento.php?inicio=${moment(
-          startDate
+          startDate,
         ).format('yyyy-MM-DD')}&fim=${moment(endDate).format(
-          'yyyy-MM-DD'
+          'yyyy-MM-DD',
         )}&exibirEncerrados=${showCloseds}`,
       });
       const {
@@ -210,7 +209,6 @@ export default class Index extends Component {
                 />
               </Grid>
             </Grid>
-            <ToastContainer pauseOnFocusLoss />
           </Grid>
           <TableComponent
             columns={columns}

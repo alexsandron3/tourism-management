@@ -7,9 +7,7 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { MyContext } from '../../contexts/MyContext';
 function Login() {
   const { loginUser, isLoggedIn } = useContext(MyContext);
@@ -92,7 +90,6 @@ function Login() {
         </Box>
       </Box>
       {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
-      <ToastContainer />
     </Container>
   );
 }

@@ -5,17 +5,17 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { setNewEvent, fetchPayment } from '../../actions';
+import ConfirmationDialog from './ConfirmationDialog';
 class SelecionarPasseio extends Component {
   constructor(props) {
     super(props);
-    this.state = { passeios: [] };
+    this.state = { passeios: [], showDialog: false };
   }
   componentDidMount() {
     this.fetchPasseios();
   }
   fetchPasseios = async () => {
     this.setState({ isLoading: true });
-
     const {
       data: { passeio = [] /* success, message */ },
     } = await axios({
@@ -26,19 +26,19 @@ class SelecionarPasseio extends Component {
     this.setState({ passeios: passeio, isLoading: false });
   };
 
-  handlePasseio = ({ target }) => {
+  handlePasseio = async ({ target }) => {
     const { dispatchSetEvent, dispatchFetchPayment, clientReducer } =
       this.props;
 
     dispatchSetEvent(target.value);
-    const dispatchValue = [target.value.idPasseio, clientReducer.cliente];
+    const dispatchValue = [target.value.idPasseio, clientReducer.idCliente];
     dispatchFetchPayment(dispatchValue);
     this.setState({ selectedPasseio: target.value, isLoading: true });
-    this.setState({ isLoading: false });
   };
 
   render() {
     const { passeios, selectedPasseio } = this.state;
+    const { paymentReducer } = this.props;
     return (
       <Grid
         container
@@ -47,6 +47,7 @@ class SelecionarPasseio extends Component {
         textAlign="center"
         p={3}
       >
+        {paymentReducer.showDialog && <ConfirmationDialog />}
         <FormControl fullWidth>
           <InputLabel id="passeios">Passeios: </InputLabel>
           <Select
@@ -55,15 +56,12 @@ class SelecionarPasseio extends Component {
             label="Passeio: "
             name="selectedPasseio"
             onChange={this.handlePasseio}
-            // onBlur={() => console.log('opa')}
-            // sx={{ minWidth: '50%' }}
           >
             {passeios.map((passeio) => {
-              // console.log(passeio);
               return (
                 <MenuItem value={passeio} key={nanoid()}>
                   {`${passeio.nomePasseio} EM ${moment(
-                    passeio.dataPasseio
+                    passeio.dataPasseio,
                   ).format('DD/MM/YYYY')} ${passeio.idPasseio}`}
                 </MenuItem>
               );
