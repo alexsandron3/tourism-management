@@ -65,7 +65,7 @@ class TableComponent extends Component {
             LoadingOverlay: this.CustomLoadingOverlay,
           }}
           loading={isLoading}
-          localeText={ptBR.props.MuiDataGrid.localeText}
+          // localeText={ptBR.props.MuiDataGrid.localeText}
           rows={row}
           getRowId={(row) => row[id]}
           columns={columns}
