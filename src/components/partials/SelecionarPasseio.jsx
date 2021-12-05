@@ -29,7 +29,6 @@ class SelecionarPasseio extends Component {
   handlePasseio = async ({ target }) => {
     const { dispatchSetEvent, dispatchFetchPayment, clientReducer } =
       this.props;
-
     dispatchSetEvent(target.value);
     const dispatchValue = [target.value.idPasseio, clientReducer.idCliente];
     dispatchFetchPayment(dispatchValue);
@@ -38,7 +37,7 @@ class SelecionarPasseio extends Component {
 
   render() {
     const { passeios, selectedPasseio } = this.state;
-    const { paymentReducer } = this.props;
+    const { paymentReducer, handlePasseio, selected } = this.props;
     return (
       <Grid
         container
@@ -52,10 +51,10 @@ class SelecionarPasseio extends Component {
           <InputLabel id="passeios">Passeios: </InputLabel>
           <Select
             labelId="passeios"
-            value={selectedPasseio || ''}
+            value={selected || selectedPasseio || ''}
             label="Passeio: "
             name="selectedPasseio"
-            onChange={this.handlePasseio}
+            onChange={handlePasseio || this.handlePasseio}
           >
             {passeios.map((passeio) => {
               return (

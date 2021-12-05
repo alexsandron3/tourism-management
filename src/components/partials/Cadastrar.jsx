@@ -30,7 +30,7 @@ export default class Cadastrar extends Component {
             </ListItemIcon>
           </ListItemButton>
         </Link>
-        <Link to="/cadastrar/despesas">
+        <Link to="/cadastrar/despesa">
           <ListItemButton>
             <ListItemIcon sx={{ marginLeft: 2 }}>
               <MoneyOffIcon />
