@@ -5,9 +5,6 @@
 Tourism Management é uma aplicação que simplifica e automatiza muitas tarefas diárias de empresas de turismo, dando agilidade, confiança e reduzindo possíveis erros que papel e caneta ou planilhas poderiam trazer.
 Esta aplicação foi desenvolvida em REACT.
 
-- Type some Markdown on the left
-- See HTML in the right
-- ✨Magic ✨
 
 ## Funcionalidades
 
