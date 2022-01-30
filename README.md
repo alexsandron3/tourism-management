@@ -52,4 +52,4 @@ npm start
 
 MIT
 
-**Free Software, Hell Yeah!**
+**Sofware livre!**
