@@ -35,7 +35,7 @@ Este texto que você leu foi escrito por um de nossos clientes. Caso tenha inter
 uma demonstração, entre em contato conosco que agendaremos um mês gratuito!
 
 
-## Installation
+## Instalação
 
 Tourism Management requer  [Node.js](https://nodejs.org/) v10+ para rodar.
 
